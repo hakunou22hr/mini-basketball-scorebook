@@ -28,6 +28,14 @@ function formatTime(seconds = state.seconds) {
   return `${String(Math.floor(seconds / 60)).padStart(2, '0')}:${String(seconds % 60).padStart(2, '0')}`;
 }
 
+function periodLabel(period = state.period) {
+  return period <= 4 ? `${period}Q` : `OT${period - 4}`;
+}
+
+function periodSeconds(period = state.period) {
+  return period <= 4 ? 360 : 180;
+}
+
 function teamName(team) { return state[`team${team}Name`]; }
 
 function recordEvent(event) {
@@ -38,13 +46,17 @@ function recordEvent(event) {
 function render() {
   document.querySelector('#scoreA').value = state.scoreA;
   document.querySelector('#scoreB').value = state.scoreB;
-  document.querySelector('#period').textContent = `${state.period}Q`;
+  document.querySelector('#period').textContent = periodLabel();
   document.querySelector('#clock').textContent = formatTime();
   document.querySelector('#clockToggle').textContent = state.running ? 'PAUSE' : 'START';
+  document.querySelector('#clockReset').textContent = state.period <= 4 ? '6:00 に戻す' : '3:00 に戻す';
   document.querySelector('#teamAName').value = state.teamAName;
   document.querySelector('#teamBName').value = state.teamBName;
   document.querySelector('#tournament').value = state.tournament;
   document.querySelector('#gameDate').value = state.gameDate;
+  document.querySelectorAll('[data-points="-1"]').forEach((button) => {
+    button.disabled = state[`score${button.dataset.team}`] === 0;
+  });
   document.querySelectorAll('[data-possession]').forEach((button) => button.classList.toggle('active', button.dataset.possession === state.possession));
   document.querySelectorAll('[data-roster]').forEach((button) => button.classList.toggle('active', button.dataset.roster === state.activeRoster));
   renderRoster();
@@ -68,7 +80,7 @@ function renderEvents() {
   const log = document.querySelector('#eventLog');
   document.querySelector('#emptyLog').hidden = state.events.length > 0;
   document.querySelector('#undoButton').disabled = state.events.length === 0;
-  log.innerHTML = state.events.map((event) => `<li><time>${event.period}Q ${event.time}</time><span>${escapeHtml(event.label)}</span><b>${escapeHtml(event.value || '')}</b></li>`).join('');
+  log.innerHTML = state.events.map((event) => `<li><time>${periodLabel(event.period)} ${event.time}</time><span>${escapeHtml(event.label)}</span><b>${escapeHtml(event.value || '')}</b></li>`).join('');
 }
 
 function escapeHtml(value) {
@@ -78,13 +90,28 @@ function escapeHtml(value) {
 document.querySelectorAll('[data-points]').forEach((button) => button.addEventListener('click', () => {
   const { team } = button.dataset;
   const points = Number(button.dataset.points);
-  state[`score${team}`] += points;
-  recordEvent({ type: 'score', team, points, label: `${teamName(team)} が得点`, value: `+${points}` });
+  if (points < 0 && state[`score${team}`] === 0) return;
+  state[`score${team}`] = Math.max(0, state[`score${team}`] + points);
+  recordEvent({
+    type: 'score', team, points,
+    label: points > 0 ? `${teamName(team)} が得点` : `${teamName(team)} の得点を訂正`,
+    value: points > 0 ? `+${points}` : String(points),
+  });
   render();
 }));
 
-document.querySelector('#periodDown').addEventListener('click', () => { state.period = Math.max(1, state.period - 1); render(); });
-document.querySelector('#periodUp').addEventListener('click', () => { state.period = Math.min(8, state.period + 1); render(); });
+function changePeriod(delta) {
+  const nextPeriod = Math.min(8, Math.max(1, state.period + delta));
+  if (nextPeriod === state.period) return;
+  state.running = false;
+  clearInterval(timerId);
+  state.period = nextPeriod;
+  state.seconds = periodSeconds(nextPeriod);
+  render();
+}
+
+document.querySelector('#periodDown').addEventListener('click', () => changePeriod(-1));
+document.querySelector('#periodUp').addEventListener('click', () => changePeriod(1));
 
 document.querySelector('#clockToggle').addEventListener('click', () => {
   state.running = !state.running;
@@ -98,7 +125,7 @@ document.querySelector('#clockToggle').addEventListener('click', () => {
   render();
 });
 
-document.querySelector('#clockReset').addEventListener('click', () => { state.running = false; clearInterval(timerId); state.seconds = 360; render(); });
+document.querySelector('#clockReset').addEventListener('click', () => { state.running = false; clearInterval(timerId); state.seconds = periodSeconds(); render(); });
 document.querySelectorAll('[data-possession]').forEach((button) => button.addEventListener('click', () => { state.possession = button.dataset.possession; render(); }));
 document.querySelectorAll('[data-roster]').forEach((button) => button.addEventListener('click', () => { state.activeRoster = button.dataset.roster; render(); }));
 
