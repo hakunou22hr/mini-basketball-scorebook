@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f45b34">
+  <title>MINI-BASKETBALL SCOREBOOK</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="トップへ">
+      <span class="brand-ball" aria-hidden="true">●</span>
+      <span>MINI-BASKETBALL<br><b>SCOREBOOK</b></span>
+    </a>
+    <div class="game-meta">
+      <label>大会名<input id="tournament" value="U12 SPRING CUP" aria-label="大会名"></label>
+      <label>試合日<input id="gameDate" type="date" aria-label="試合日"></label>
+    </div>
+    <button class="icon-button" id="resetButton" type="button" title="試合をリセット">↻</button>
+  </header>
+
+  <main>
+    <section class="scoreboard" aria-label="スコアボード">
+      <div class="team team-a">
+        <span class="team-label">HOME</span>
+        <input class="team-name" id="teamAName" value="SKY HAWKS" aria-label="ホームチーム名">
+        <output class="score" id="scoreA">0</output>
+        <div class="score-actions" aria-label="ホーム得点">
+          <button data-team="A" data-points="1">+1</button>
+          <button data-team="A" data-points="2">+2</button>
+          <button data-team="A" data-points="3">+3</button>
+        </div>
+      </div>
+
+      <div class="game-center">
+        <div class="period-switcher">
+          <button id="periodDown" aria-label="前のクォーター">−</button>
+          <div><small>PERIOD</small><strong id="period">1Q</strong></div>
+          <button id="periodUp" aria-label="次のクォーター">＋</button>
+        </div>
+        <div class="clock" id="clock" role="timer">06:00</div>
+        <button class="clock-toggle" id="clockToggle">START</button>
+        <button class="clock-reset" id="clockReset">6:00 に戻す</button>
+        <div class="possession" aria-label="ポゼッション">
+          <button data-possession="A" aria-label="ホームボール">◀</button>
+          <span>POSSESSION</span>
+          <button data-possession="B" aria-label="アウェーボール">▶</button>
+        </div>
+      </div>
+
+      <div class="team team-b">
+        <span class="team-label">AWAY</span>
+        <input class="team-name" id="teamBName" value="RED COMETS" aria-label="アウェーチーム名">
+        <output class="score" id="scoreB">0</output>
+        <div class="score-actions" aria-label="アウェー得点">
+          <button data-team="B" data-points="1">+1</button>
+          <button data-team="B" data-points="2">+2</button>
+          <button data-team="B" data-points="3">+3</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel roster-panel">
+        <div class="panel-heading"><div><span>PLAYERS</span><h2>選手・ファウル</h2></div><button id="addPlayer">＋ 選手追加</button></div>
+        <div class="team-tabs" role="tablist">
+          <button class="active" data-roster="A">HOME</button><button data-roster="B">AWAY</button>
+        </div>
+        <div class="roster-header"><span>NO.</span><span>PLAYER</span><span>FOULS</span></div>
+        <div id="roster" class="roster"></div>
+      </div>
+
+      <div class="panel log-panel">
+        <div class="panel-heading"><div><span>GAME FLOW</span><h2>プレイ記録</h2></div><button id="undoButton" disabled>↶ ひとつ戻す</button></div>
+        <div id="emptyLog" class="empty-log"><div class="empty-ball">●</div><b>まだ記録がありません</b><p>得点やファウルを入力すると<br>ここに表示されます</p></div>
+        <ol id="eventLog" class="event-log" aria-live="polite"></ol>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>MINI-BASKETBALL SCOREBOOK</span><span>データはこの端末に自動保存されます</span></footer>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
