@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { defaultState, createEvent, derive, runningScoreCells, getQuarterInk, periodLabel } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells, getQuarterInk, periodLabel, participationMark } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -114,3 +114,15 @@ runningHtml = runningScoreCells(derive(runningState));
 assert.match(runningRow(8)[0], /score-close-game/); assert.match(runningHtml, /running-score ink-red score-close score-close-game">8/);
 assert.match(runningRow(9)[1], /unused-score-slash/);
 console.log('JBA U12 running-score notation checks passed');
+
+
+// Participation records use mini-basketball slash notation, including legacy booleans.
+assert.equal(participationMark('in'), '／');
+assert.equal(participationMark(true), '／');
+assert.equal(participationMark('out'), '＼');
+assert.equal(participationMark(null), '');
+assert.doesNotMatch(['in', 'out', true].map(participationMark).join(''), /✓/);
+
+// Explicit colgroups keep scorer fields wider than the two score-number fields.
+assert.match(runningHtml, /<col class="scorer-col"><col class="score-col"><col class="score-col"><col class="scorer-col">/);
+console.log('Participation notation and running-score proportions checks passed');
