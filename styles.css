@@ -39,3 +39,35 @@
 .run-block th:nth-child(2),.run-block th:nth-child(3),.run-block td{width:auto}
 .run-block .team-b-score-number{background:#eee;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .scorer-mark{max-width:100%;padding:0 .35mm;white-space:nowrap}
+
+/* Keep the A4 page on one immutable coordinate system; only this wrapper scales. */
+.paper-stage{padding:0 12px 30px}
+.sheet-viewport{--sheet-scale:1;position:relative;margin:0 auto;transform-origin:top left}
+.sheet-viewport>.official-sheet{width:210mm;height:297mm;margin:0;transform:scale(var(--sheet-scale));transform-origin:top left}
+.sheet-viewport.zoom-fit>.official-sheet,.sheet-viewport.zoom-in>.official-sheet{width:210mm;height:297mm}
+.sheet-tools button[aria-pressed="true"]{background:var(--ink)}
+
+/* Five event-derived period totals make the four-quarter format explicit. */
+.score-team-box>strong{height:10mm;margin:.5mm auto;font-size:13px;line-height:10mm}
+.score-team-box .quarter-summary{display:grid;grid-template-columns:repeat(5,1fr);gap:0;width:100%;border:1px solid #111}
+.score-team-box .quarter-summary span{display:block;min-width:0;border-right:1px solid #111;font:700 5.5px/1 Arial,sans-serif}
+.score-team-box .quarter-summary span:last-child{border-right:0}
+.score-team-box .quarter-summary small,.score-team-box .quarter-summary b{display:block;padding:.3mm 0}
+.score-team-box .quarter-summary small{background:#eee;font-size:4.8px;font-weight:700}
+.score-team-box .quarter-summary b{font-size:6.5px}
+
+/* Scorer columns take priority over the narrower running-total columns. */
+.run-block col.scorer-col{width:38%}
+.run-block col.score-col{width:12%}
+.run-block .scorer-mark{min-width:4mm;padding:0 .45mm;font-size:8px;line-height:4mm;font-weight:900}
+.run-block .scorer-mark.three-point{height:4mm;line-height:3.6mm;border-width:1.2px}
+
+@media(orientation:landscape){
+  .paper-stage{height:calc(100vh - 120px)}
+  .sheet-viewport>.official-sheet{margin:0;transform:scale(var(--sheet-scale))}
+}
+@media print{
+  .paper-stage{padding:0}
+  .sheet-viewport{width:210mm!important;height:297mm!important;margin:0;transform:none}
+  .sheet-viewport>.official-sheet{width:210mm;height:297mm;margin:0;transform:none!important}
+}
