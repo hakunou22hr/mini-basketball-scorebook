@@ -20,7 +20,7 @@
   <section class="scorebar" aria-label="スコアボード">
     <div class="score-team home"><span>HOME</span><input id="teamAName" aria-label="ホームチーム名"><output id="scoreA">0</output></div>
     <div class="game-center">
-      <button id="periodAdvance" class="period-advance" type="button" aria-label="現在1Q。次のクォーターへ進む"><strong id="period">1Q</strong><small>次のQへ</small></button>
+      <div class="current-period" aria-label="現在のクォーター"><strong id="period">1Q</strong><small>CURRENT Q</small></div>
       <div id="clock" class="clock" role="timer">06:00</div>
       <div class="clock-buttons"><button id="clockToggle">START</button><button id="clockReset">RESET</button></div>
       <div class="possession"><button data-possession="A">◀ HOME</button><span>POSSESSION</span><button data-possession="B">AWAY ▶</button></div>
@@ -45,6 +45,7 @@
           <div class="action-group"><h3>その他スタッツ</h3><div class="action-grid stats-actions"><button data-action="OREB">OREB</button><button data-action="DREB">DREB</button><button data-action="AST">AST</button><button data-action="TOV">TOV</button><button data-action="STL">STL</button><button data-action="BLK">BLK</button><button class="foul-action" data-action="PF">PF ファウル</button></div></div>
           <div class="team-fouls"><span>Q TEAM FOUL</span><b>HOME <output id="teamFoulA">0</output></b><b>AWAY <output id="teamFoulB">0</output></b></div>
           <div class="timeout-buttons"><button id="timeoutButton" type="button">TIMEOUT</button></div>
+          <button id="periodAdvance" class="period-next-button" type="button">次のクォーターへ <strong>2Q</strong> <span aria-hidden="true">＞</span></button>
           <div class="history-buttons"><button id="undoButton">↶ UNDO</button><button id="redoButton">REDO ↷</button></div>
           <button id="voiceButton" class="voice-button">🎙 音声入力</button><p id="voiceStatus" class="voice-status">選手を選択後「5番 2点」などと話してください</p>
         </section>
