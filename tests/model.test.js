@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { defaultState, createEvent, derive } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -39,4 +39,10 @@ data = derive(state);
 assert.equal(data.scores.A, 1); assert.equal(data.stats.A[home.id].PTS, 1); assert.equal(data.running.length, 2); assert.equal(data.quarterScores.A[0], 0);
 state.events.splice(scoreIndex, 0, scoreEvent);
 assert.equal(derive(state).scores.A, 3);
-console.log('18 synchronized JBA U12 scorebook model checks passed');
+const runningScore = runningScoreCells(derive(state));
+assert.match(runningScore, /<th>A<\/th><th>得点<\/th><th>得点<\/th><th>B<\/th>/);
+assert.match(runningScore, /scorer-mark period-odd[^>]*>7<\/span>/);
+assert.match(runningScore, /score-slash period-odd/);
+assert.match(runningScore, /scorer-mark period-even[^>]*>7<\/span>/);
+assert.match(runningScore, /score-slash period-even/);
+console.log('23 synchronized JBA U12 scorebook model checks passed');
