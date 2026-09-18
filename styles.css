@@ -62,15 +62,16 @@
 
 
 .sheet-body{height:221mm;margin-top:3mm;grid-template-columns:102mm 14mm 76mm;gap:3mm}
-.teams-column{grid-template-rows:107mm 107mm 3mm;gap:2mm}
-.official-team{height:107mm}
-.team-band{height:14mm;grid-template-columns:minmax(0,1fr) 12mm 28mm;padding:1.2mm 1.5mm}
+.teams-column{position:relative;grid-template-rows:98mm 98mm 21mm;gap:2mm}
+.official-team{height:98mm}
+.team-band{height:13mm;grid-template-columns:minmax(0,1fr) 12mm 28mm;padding:1.2mm 1.5mm}
 .team-band>div:first-child{min-width:0;overflow:hidden}
 .team-band>div:first-child b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sheet-timeouts>div{height:5mm}
-.players-table{height:92mm}
+.players-table{height:84mm}
 .players-table .row-no{width:5mm}.players-table .license{width:15mm}.players-table .player-name{width:33mm}.players-table .uniform{width:6mm}.players-table .period-col{width:5mm}.players-table .foul-col{width:4.6mm}
-.players-table th,.players-table td{height:4.4mm}
+.players-table th,.players-table td{height:4mm}
+.sheet-note{position:absolute;left:0;bottom:-4.5mm;margin:0;font-size:4.5px}
 .fouls-column{grid-template-rows:107mm 107mm;gap:2mm}
 .sheet-team-fouls{margin-top:14mm}
 .official-running{height:216mm}
@@ -103,23 +104,26 @@
 .competition-row label{height:100%;display:grid;grid-template-columns:14mm minmax(0,1fr);align-items:center;padding:0}
 .competition-row .meta-label{height:100%;display:flex;align-items:center;justify-content:center;border-right:1px solid #111;white-space:nowrap}
 .competition-row input{width:100%;height:100%;min-width:0;padding:0 2mm;border:0;background:transparent;font-size:7px}
-.official-score-box{height:32mm;display:grid;grid-template-columns:14mm 36mm 13mm 36mm;overflow:hidden}
-.score-label-col{display:flex;flex-direction:column;align-items:center;padding-top:2mm;font-size:6px;line-height:1.2}
-.score-label-col b{font-weight:400}.score-label-col span{margin-top:1mm;font-size:5px}
-.score-team{height:32mm;display:grid;grid-template-rows:5mm 18mm 8mm;justify-items:center;align-content:start;text-align:center}
+.official-score-box{height:32mm;display:grid;grid-template-columns:43mm 13mm 43mm;overflow:hidden}
+.official-score-box .score-team{height:32mm;padding:0;display:grid;grid-template-columns:1fr;grid-template-rows:7mm 20mm;justify-items:center;align-content:center;text-align:center}
 .score-team-label{align-self:center;font-size:6px;line-height:1;white-space:nowrap}
 .score-team-label span{font-size:5px}
 .score-total{box-sizing:border-box;width:18mm;height:18mm;border:1px solid #111;font:700 15px/17.5mm Arial,sans-serif}
-.score-periods{box-sizing:border-box;width:36mm;height:8mm;display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #111}
-.score-period-cell{min-width:0;display:grid;grid-template-rows:3mm 1fr;border-right:1px solid #111;font-family:Arial,sans-serif}
-.score-period-cell:last-child{border-right:0}
-.score-period-cell span{display:flex;align-items:center;justify-content:center;border-bottom:1px solid #111;background:#eee;font-size:4px;font-weight:700;line-height:1}
-.score-period-cell strong{display:flex;align-items:center;justify-content:center;font-size:5.5px;line-height:1}
 .score-middle{position:relative;height:32mm;display:grid;grid-template-rows:24mm 8mm;justify-items:center;overflow:hidden}
 .score-middle::before{content:"";position:absolute;top:1mm;bottom:8mm;left:50%;border-left:1px solid #111}
 .score-dashes{position:relative;z-index:1;height:23mm;display:grid;grid-template-rows:repeat(4,1fr);align-items:center;font:400 6px/1 Arial,sans-serif}
 .score-dashes span{width:5mm;background:#fff;text-align:center}
 .overtime-label{align-self:center;font-size:5px;line-height:1;white-space:nowrap}
+.quarter-score-box{height:21mm;display:grid;grid-template-columns:20mm 1fr;border:1px solid #111;background:#fff}
+.quarter-score-heading{display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:1px solid #111;font-size:6px}
+.quarter-score-heading span{margin-top:1mm;font-size:5px}
+.quarter-score-rows{display:grid;grid-template-rows:repeat(5,1fr)}
+.quarter-score-row{display:grid;grid-template-columns:39mm 1fr;min-height:0;border-bottom:1px solid #111}
+.quarter-score-row:last-child{border-bottom:0}
+.quarter-score-label{display:flex;align-items:center;justify-content:space-between;padding:0 2mm;border-right:1px solid #111;line-height:1}
+.quarter-score-label b{font-size:5.5px}.quarter-score-label span{font:5px Arial,sans-serif}
+.quarter-score-values{display:grid;grid-template-columns:4mm 8mm 5mm 8mm 4mm;align-items:center;justify-content:center;text-align:center;font:5.5px Arial,sans-serif}
+.quarter-score-values strong{height:3.2mm;border:1px solid #111;line-height:3mm;font-size:6px}.quarter-score-values i{font-style:normal}
 .header-right{min-width:0;display:grid;grid-template-rows:14mm 28mm;overflow:hidden}
 .match-info{min-width:0;display:grid;grid-template-rows:7mm 7mm}
 .date-time,.venue-game{min-width:0;display:grid;grid-template-columns:60mm minmax(0,1fr);border-bottom:1px solid #111}
