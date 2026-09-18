@@ -28,3 +28,13 @@
 .period-next-button{display:block;width:100%;min-height:52px;margin:0 0 8px;padding:10px 12px;border:2px solid #bd5b14;border-radius:4px;color:#fff;background:var(--orange);font:800 14px 'Barlow Condensed';letter-spacing:.3px;box-shadow:0 2px 0 #8d3d08;transition:filter .15s,transform .15s}.period-next-button strong{margin:0 4px;font-size:21px}.period-next-button span{font-size:18px}.period-next-button:hover,.period-next-button:focus-visible{filter:brightness(1.08);transform:translateY(-1px)}.period-next-button:active{box-shadow:none;transform:translateY(1px)}
 .ink-red{color:#c40000!important}.ink-black{color:#111!important}
 .sheet-team-fouls td.marked{background:#fff;text-decoration:line-through;text-decoration-color:currentColor;text-decoration-thickness:1.5px}
+
+/* Scoresheet participation marks and running-score column proportions */
+.period-checks{gap:6px;flex-wrap:wrap}
+.period-checks label{gap:3px}
+.period-checks select{max-width:82px;padding:2px;border:1px solid var(--line);border-radius:3px;color:var(--ink);background:#fff;font:700 9px 'Noto Sans JP',sans-serif}
+.players-table td.participation-mark{font:700 9px/1 Arial,'Noto Sans JP',sans-serif}
+.run-block col.scorer-col{width:34.375%}
+.run-block col.score-col{width:15.625%}
+.run-block th:nth-child(2),.run-block th:nth-child(3),.run-block td{width:auto}
+.scorer-mark{max-width:100%;padding:0 .35mm;white-space:nowrap}
