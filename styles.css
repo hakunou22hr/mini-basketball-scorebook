@@ -103,24 +103,24 @@
 .competition-row label{height:100%;display:grid;grid-template-columns:14mm minmax(0,1fr);align-items:center;padding:0}
 .competition-row .meta-label{height:100%;display:flex;align-items:center;justify-content:center;border-right:1px solid #111;white-space:nowrap}
 .competition-row input{width:100%;height:100%;min-width:0;padding:0 2mm;border:0;background:transparent;font-size:7px}
-.score-area{height:32mm;display:grid;grid-template-columns:14mm minmax(0,1fr) 13mm minmax(0,1fr);align-items:center;padding:1.5mm 2mm 1mm 0;overflow:hidden}
-.score-label{align-self:start;padding-top:1.5mm;text-align:center;font-size:6px}
-.score-label small{display:block;margin-top:1mm;font-size:5px;font-weight:400}
-.score-team-box{min-width:0;text-align:center}
-.score-team-box>b{display:block;font-size:6px;font-weight:400;white-space:nowrap}
-.score-team-box>b small{font-size:5px;font-weight:400}
-.score-team-box>strong{display:block;width:17mm;height:12mm;margin:.7mm auto;border:1px solid #111;font:700 15px/12mm Arial,sans-serif}
-.score-team-box .quarter-summary{width:100%;height:7mm;display:grid;grid-template-columns:repeat(5,1fr);gap:0;border:1px solid #111;overflow:hidden}
-.score-team-box .quarter-summary span{display:block;min-width:0;border-right:1px solid #111;font:700 5px/1 Arial,sans-serif}
-.score-team-box .quarter-summary span:last-child{border-right:0}
-.score-team-box .quarter-summary small,.score-team-box .quarter-summary b{display:block;padding:.35mm 0}
-.score-team-box .quarter-summary small{background:#eee;font-size:4.2px;font-weight:700}
-.score-team-box .quarter-summary b{font-size:5.5px}
-.score-separator{position:relative;height:27mm;display:flex;align-items:flex-end;justify-content:center;padding-bottom:1mm;border:0}
-.score-separator i{position:absolute;left:50%;top:2mm;bottom:6mm;width:0;border-left:1px solid #111}
-.score-separator i::before,.score-separator i::after{content:"";position:absolute;left:-2mm;width:4mm;border-top:1px solid #111}
-.score-separator i::before{top:0}.score-separator i::after{bottom:0}
-.score-separator small{font-size:5px;white-space:nowrap}
+.official-score-box{position:relative;width:99mm;height:32mm;overflow:hidden}
+.score-label-col{position:absolute;top:0;left:0;width:14mm;height:32mm;display:flex;flex-direction:column;align-items:center;padding-top:2mm;font-size:6px;line-height:1.2}
+.score-label-col b{font-weight:400}.score-label-col span{margin-top:1mm;font-size:5px}
+.score-team{position:absolute;top:0;width:29mm;height:32mm;text-align:center}
+.score-team-a{left:14mm}.score-team-b{left:70mm}
+.score-team-label{position:absolute;top:0;left:0;width:29mm;height:5mm;display:flex;align-items:center;justify-content:center;font-size:6px;line-height:1;white-space:nowrap}
+.score-team-label span{font-size:5px}
+.score-total{position:absolute;top:5mm;left:5.5mm;box-sizing:border-box;width:18mm;height:18mm;border:1px solid #111;font:700 15px/17.5mm Arial,sans-serif}
+.score-periods{position:absolute;top:23mm;left:1mm;box-sizing:border-box;width:27mm;height:8mm;display:grid;grid-template-columns:repeat(5,1fr);border:1px solid #111}
+.score-period-cell{min-width:0;display:grid;grid-template-rows:3mm 1fr;border-right:1px solid #111;font-family:Arial,sans-serif}
+.score-period-cell:last-child{border-right:0}
+.score-period-cell span{display:flex;align-items:center;justify-content:center;border-bottom:1px solid #111;background:#eee;font-size:4px;font-weight:700;line-height:1}
+.score-period-cell strong{display:flex;align-items:center;justify-content:center;font-size:5.5px;line-height:1}
+.score-middle{position:absolute;top:0;left:43mm;width:27mm;height:32mm;overflow:hidden;text-align:center}
+.score-middle::before{content:"";position:absolute;top:1mm;bottom:8mm;left:13.5mm;border-left:.25mm solid #111}
+.score-dashes{position:absolute;z-index:1;top:0;left:0;width:27mm;height:23mm;display:grid;grid-template-rows:repeat(4,1fr);align-items:center;justify-items:center;font:400 6px/1 Arial,sans-serif}
+.score-dashes span{width:5mm;background:#fff;text-align:center}
+.overtime-label{position:absolute;top:24mm;left:0;width:27mm;height:8mm;display:flex;align-items:center;justify-content:center;font-size:5px;line-height:1;white-space:nowrap}
 .header-right{min-width:0;display:grid;grid-template-rows:14mm 28mm;overflow:hidden}
 .match-info{min-width:0;display:grid;grid-template-rows:7mm 7mm}
 .date-time,.venue-game{min-width:0;display:grid;grid-template-columns:60mm minmax(0,1fr);border-bottom:1px solid #111}

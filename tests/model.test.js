@@ -160,7 +160,7 @@ const summaryPlayer = summaryState.playersA[0];
 });
 const summaryData = derive(summaryState);
 assert.deepEqual(summaryData.quarterScores.A, [2,1,3,2,1]);
-assert.equal(quarterSummaryCells(summaryData, 'A'), '<span><small>Q1</small><b>2</b></span><span><small>Q2</small><b>1</b></span><span><small>Q3</small><b>3</b></span><span><small>Q4</small><b>2</b></span><span><small>OT</small><b>1</b></span>');
+assert.equal(quarterSummaryCells(summaryData, 'A'), '<div class="score-period-cell"><span>Q1</span><strong>2</strong></div><div class="score-period-cell"><span>Q2</span><strong>1</strong></div><div class="score-period-cell"><span>Q3</span><strong>3</strong></div><div class="score-period-cell"><span>Q4</span><strong>2</strong></div><div class="score-period-cell"><span>OT</span><strong>1</strong></div>');
 
 // Zoom is isolated on the wrapper/page transform and never changes A4 dimensions.
 const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
@@ -185,11 +185,20 @@ assert.match(js, /<div class="header-right"><div class="match-info"><div class="
 assert.match(js, /<div class="officials-grid">\$\{metaInput\('crewChief',[\s\S]*?shotClockOperator/);
 assert.equal((css.match(/^\.official-sheet-header\{/gm)||[]).length, 1);
 assert.equal((css.match(/^\.officials-grid\{/gm)||[]).length, 1);
-assert.equal((css.match(/^\.score-area\{/gm)||[]).length, 1);
+assert.equal((css.match(/^\.official-score-box\{/gm)||[]).length, 1);
 assert.doesNotMatch(css, /^\.(official-meta|officials|official-score)\{/m);
 assert.match(js, /<span class="meta-label">\$\{label\}<\/span>/);
-assert.match(js, /<div class="score-separator" aria-hidden="true"><i><\/i><small>（延長）<\/small><\/div>/);
-assert.match(js, /チームA <small>Team A<\/small>/);
+assert.match(js, /<div class="official-score-box" aria-label="スコア">/);
+assert.match(js, /<div class="score-label-col"><b>スコア<\/b><span>Score<\/span><\/div>/);
+assert.match(js, /<div class="score-middle" aria-hidden="true"><div class="score-dashes"><span>－<\/span><span>－<\/span><span>－<\/span><span>－<\/span><\/div><span class="overtime-label">（延長）<\/span><\/div>/);
+assert.match(css, /\.official-score-box\{position:relative;width:99mm;height:32mm;overflow:hidden\}/);
+assert.match(css, /\.score-team\{position:absolute;top:0;width:29mm;height:32mm;text-align:center\}/);
+assert.match(css, /\.score-team-a\{left:14mm\}\.score-team-b\{left:70mm\}/);
+assert.match(css, /\.score-middle\{position:absolute;top:0;left:43mm;width:27mm;height:32mm;/);
+assert.match(css, /\.score-total\{position:absolute;top:5mm;left:5\.5mm;[^}]*width:18mm;height:18mm;/);
+assert.match(css, /\.score-periods\{position:absolute;top:23mm;left:1mm;[^}]*width:27mm;height:8mm;/);
+assert.doesNotMatch(css, /^\.(score-area|score-team-box|score-separator|quarter-summary)\{/m);
+assert.match(js, /<div class="score-team-label">チームA <span>Team A<\/span><\/div>/);
 assert.match(js, /日付　　年　　月　　日/);
 assert.match(js, /applySheetZoom\('fit'\)/);
 assert.match(js, /applySheetZoom\('zoom'\)/);
