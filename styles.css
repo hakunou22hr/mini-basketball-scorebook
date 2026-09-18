@@ -119,3 +119,74 @@
 .result{right:5.5mm;bottom:6mm;height:12mm}
 .result>div{min-width:0}
 .result strong,.result input{min-width:0;overflow:hidden;white-space:nowrap}
+
+/* JBA U12 header reconstruction: fixed millimetre geometry inside the A4 page. */
+.official-title{
+  height:12mm;
+  display:grid;
+  grid-template-columns:34mm minmax(0,1fr);
+  align-items:center;
+  border:0;
+}
+.official-title h1{font-size:15px;letter-spacing:.25px;text-align:left}
+.official-meta{
+  height:42mm;
+  display:grid;
+  grid-template-columns:100mm 96mm;
+  border:1px solid #111;
+}
+.meta-left{min-width:0;border-right:1px solid #111}
+.tournament-row{height:10mm;border-bottom:1px solid #111}
+.tournament-row label{display:grid;grid-template-columns:14mm minmax(0,1fr);padding:0}
+.tournament-row .meta-label{height:100%;display:flex;align-items:center;justify-content:center;border-right:1px solid #111}
+.tournament-row input{height:100%;padding:0 2mm;font-size:7px}
+.official-score{
+  height:32mm;
+  display:grid;
+  grid-template-columns:14mm minmax(0,1fr) 13mm minmax(0,1fr);
+  align-items:center;
+  padding:1.5mm 2mm 1mm 0;
+}
+.score-label{align-self:start;padding-top:1.5mm;text-align:center;font-size:6px}
+.score-label small{display:block;margin-top:1mm;font-size:5px;font-weight:400}
+.score-team-box{min-width:0;text-align:center}
+.score-team-box>b{display:block;font-size:6px;font-weight:400;white-space:nowrap}
+.score-team-box>b small{font-size:5px;font-weight:400}
+.score-team-box>strong{display:block;width:17mm;height:13mm;margin:1mm auto;border:1px solid #111;font:700 15px/13mm Arial,sans-serif}
+.score-team-box .quarter-summary{width:100%;height:7mm;border:1px solid #111}
+.score-team-box .quarter-summary span{font-size:5px}
+.score-team-box .quarter-summary small{padding:.35mm 0;font-size:4.2px}
+.score-team-box .quarter-summary b{padding:.3mm 0;font-size:5.5px}
+.score-separator{position:relative;height:27mm;display:flex;align-items:flex-end;justify-content:center;padding-bottom:1mm;border:0}
+.score-separator i{position:absolute;left:50%;top:2mm;bottom:6mm;width:0;border-left:1px solid #111}
+.score-separator i::before,.score-separator i::after{content:"";position:absolute;left:-2mm;width:4mm;border-top:1px solid #111}
+.score-separator i::before{top:0}.score-separator i::after{bottom:0}
+.score-separator small{font-size:5px;white-space:nowrap}
+.meta-right{min-width:0;display:grid;grid-template-rows:7mm 7mm 28mm}
+.date-time,.venue-game{display:grid;grid-template-columns:61mm 35mm;border-bottom:1px solid #111}
+.date-time label,.venue-game label{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:1mm;min-width:0;padding:.7mm 1mm;font-size:5.3px}
+.date-time label+label,.venue-game label+label{border-left:1px solid #111}
+.date-time .meta-label,.venue-game .meta-label{white-space:pre;font-weight:400}
+.date-time input,.venue-game input{width:100%;height:4mm;min-width:0;padding:0;border:0;font-size:5.8px}
+.officials{height:28mm;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);border:0}
+.officials label{
+  height:auto;
+  display:grid;
+  grid-template-columns:18mm minmax(0,1fr);
+  align-items:center;
+  gap:1mm;
+  min-width:0;
+  padding:1mm;
+  border:0;
+  border-right:1px solid #111;
+  border-bottom:1px solid #111;
+  font-size:5px;
+  line-height:1.1;
+  writing-mode:horizontal-tb;
+}
+.officials label:nth-child(even){border-right:0}
+.officials label:nth-last-child(-n+2){border-bottom:0}
+.officials .meta-label{min-width:0;overflow:visible;white-space:nowrap;font-size:5px;letter-spacing:-.08mm}
+.officials label:last-child{grid-template-columns:26mm minmax(0,1fr)}
+.officials label:last-child .meta-label{font-size:4.2px;letter-spacing:-.15mm}
+.officials input{width:100%;height:4mm;min-width:0;padding:0 .5mm;border:0;border-bottom:1px dotted #777;font-size:5.8px}
