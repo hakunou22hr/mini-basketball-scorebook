@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { defaultState, createEvent, derive } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -39,4 +39,14 @@ data = derive(state);
 assert.equal(data.scores.A, 1); assert.equal(data.stats.A[home.id].PTS, 1); assert.equal(data.running.length, 2); assert.equal(data.quarterScores.A[0], 0);
 state.events.splice(scoreIndex, 0, scoreEvent);
 assert.equal(derive(state).scores.A, 3);
-console.log('18 synchronized JBA U12 scorebook model checks passed');
+
+// Official running score uses A / score / score / B and quarter-colored marks.
+const runningHtml = runningScoreCells(derive(state));
+assert.match(runningHtml, /<th>A<\/th><th>得点<\/th><th>得点<\/th><th>B<\/th>/);
+assert.match(runningHtml, /run-mark team-a/);
+assert.match(runningHtml, /run-mark team-b/);
+assert.match(runningHtml, /odd-quarter/);
+assert.match(runningHtml, /even-quarter/);
+assert.equal((runningHtml.match(/class="run-block"/g) || []).length, 3);
+assert.equal((runningHtml.match(/class="score-number"/g) || []).length, 240);
+console.log('25 synchronized JBA U12 scorebook model checks passed');
