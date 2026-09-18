@@ -46,3 +46,31 @@ assert.match(runningScore, /score-slash period-odd/);
 assert.match(runningScore, /scorer-mark period-even[^>]*>7<\/span>/);
 assert.match(runningScore, /score-slash period-even/);
 console.log('23 synchronized JBA U12 scorebook model checks passed');
+
+// TIMEOUT uses the common event stream for PBP, scoresheet counts, undo, and redo.
+state.period = 2; state.seconds = 204;
+const timeout = createEvent(state, 'B', null, 'TIMEOUT', 'timeout-b');
+state.events.push(timeout); data = derive(state);
+assert.equal(timeout.time, '03:24');
+assert.equal(data.timeouts.B[1], 1);
+assert.equal(data.pbp.at(-1).label, 'TIMEOUT');
+state.future.push(state.events.pop()); assert.equal(derive(state).timeouts.B[1], 0);
+state.events.push(state.future.pop()); assert.equal(derive(state).timeouts.B[1], 1);
+
+// A period transition is one undoable event and expands into end/start PBP entries.
+const { createPeriodChangeEvent } = require('../app.js');
+state.period = 2; state.seconds = 0;
+const transition = createPeriodChangeEvent(state, 'period-2-3');
+assert.deepEqual({from:transition.fromPeriod,to:transition.toPeriod,seconds:transition.toSeconds},{from:2,to:3,seconds:360});
+state.events.push(transition); data = derive(state);
+assert.deepEqual(data.pbp.slice(-2).map(event => [event.displayPeriod,event.time,event.label]), [[2,'00:00','2Q終了'],[3,'06:00','3Q開始']]);
+assert.deepEqual(data.quarterScores.A, [2,1,0,0,0]);
+state.events.pop(); assert.equal(derive(state).pbp.some(event => event.id === 'period-2-3'), false);
+state.events.push(transition); assert.equal(derive(state).pbp.filter(event => event.id === 'period-2-3').length, 2);
+
+// Regulation advances at six minutes; 4Q advances to the existing three-minute OT.
+state.period = 3; assert.equal(createPeriodChangeEvent(state, 'period-3-4').toSeconds, 360);
+state.period = 4;
+const overtime = createPeriodChangeEvent(state, 'period-4-ot');
+assert.equal(overtime.toPeriod, 5); assert.equal(overtime.toSeconds, 180);
+console.log('TIMEOUT and quarter transition checks passed');

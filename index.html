@@ -20,7 +20,7 @@
   <section class="scorebar" aria-label="スコアボード">
     <div class="score-team home"><span>HOME</span><input id="teamAName" aria-label="ホームチーム名"><output id="scoreA">0</output></div>
     <div class="game-center">
-      <div class="period-switcher"><button id="periodDown">−</button><strong id="period">1Q</strong><button id="periodUp">＋</button></div>
+      <button id="periodAdvance" class="period-advance" type="button" aria-label="現在1Q。次のクォーターへ進む"><strong id="period">1Q</strong><small>次のQへ</small></button>
       <div id="clock" class="clock" role="timer">06:00</div>
       <div class="clock-buttons"><button id="clockToggle">START</button><button id="clockReset">RESET</button></div>
       <div class="possession"><button data-possession="A">◀ HOME</button><span>POSSESSION</span><button data-possession="B">AWAY ▶</button></div>
@@ -44,7 +44,7 @@
           <div class="action-group"><h3>得点</h3><div class="action-grid scoring"><button data-action="FTM">+1<small>FT成功</small></button><button data-action="2PM">+2<small>2P成功</small></button><button data-action="3PM">+3<small>3P成功</small></button><button class="miss" data-action="FTX">FT失敗</button><button class="miss" data-action="2PX">2P失敗</button><button class="miss" data-action="3PX">3P失敗</button></div></div>
           <div class="action-group"><h3>その他スタッツ</h3><div class="action-grid stats-actions"><button data-action="OREB">OREB</button><button data-action="DREB">DREB</button><button data-action="AST">AST</button><button data-action="TOV">TOV</button><button data-action="STL">STL</button><button data-action="BLK">BLK</button><button class="foul-action" data-action="PF">PF ファウル</button></div></div>
           <div class="team-fouls"><span>Q TEAM FOUL</span><b>HOME <output id="teamFoulA">0</output></b><b>AWAY <output id="teamFoulB">0</output></b></div>
-          <div class="timeout-buttons"><button data-timeout="A">HOME TIMEOUT</button><button data-timeout="B">AWAY TIMEOUT</button></div>
+          <div class="timeout-buttons"><button id="timeoutButton" type="button">TIMEOUT</button></div>
           <div class="history-buttons"><button id="undoButton">↶ UNDO</button><button id="redoButton">REDO ↷</button></div>
           <button id="voiceButton" class="voice-button">🎙 音声入力</button><p id="voiceStatus" class="voice-status">選手を選択後「5番 2点」などと話してください</p>
         </section>
@@ -57,6 +57,12 @@
     <section id="pbpView" class="view"><div class="view-heading"><div><small>GAME FLOW</small><h1>プレイ・バイ・プレイ</h1></div></div><div id="pbpContent" class="pbp-list"></div></section>
   </main>
   <footer><span>MINI-BASKETBALL SCOREBOOK · U12 · 4Q × 6 MIN</span><span>データはこの端末に自動保存されます</span></footer>
+  <dialog id="timeoutDialog" class="choice-dialog" aria-labelledby="timeoutTitle">
+    <form method="dialog"><h2 id="timeoutTitle">TIMEOUT</h2><p>どちらのチームですか？</p><button type="button" data-timeout="A"><small>TEAM A</small><strong id="timeoutTeamA"></strong></button><button type="button" data-timeout="B"><small>TEAM B</small><strong id="timeoutTeamB"></strong></button><button class="dialog-cancel" value="cancel">キャンセル</button></form>
+  </dialog>
+  <dialog id="periodDialog" class="choice-dialog" aria-labelledby="periodDialogTitle">
+    <form method="dialog"><h2 id="periodDialogTitle"></h2><p>現在の得点を保持し、時計をリセットします。</p><button id="periodConfirm" type="button"></button><button class="dialog-cancel" value="cancel">キャンセル</button></form>
+  </dialog>
   <div class="toast" id="toast" role="status"></div>
   <script src="app.js"></script>
 </body>
