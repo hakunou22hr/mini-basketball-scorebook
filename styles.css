@@ -37,4 +37,5 @@
 .run-block col.scorer-col{width:34.375%}
 .run-block col.score-col{width:15.625%}
 .run-block th:nth-child(2),.run-block th:nth-child(3),.run-block td{width:auto}
+.run-block .team-b-score-number{background:#eee;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .scorer-mark{max-width:100%;padding:0 .35mm;white-space:nowrap}
