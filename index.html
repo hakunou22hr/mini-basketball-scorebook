@@ -44,6 +44,7 @@
           <div class="action-group"><h3>得点</h3><div class="action-grid scoring"><button data-action="FTM">+1<small>FT成功</small></button><button data-action="2PM">+2<small>2P成功</small></button><button data-action="3PM">+3<small>3P成功</small></button><button class="miss" data-action="FTX">FT失敗</button><button class="miss" data-action="2PX">2P失敗</button><button class="miss" data-action="3PX">3P失敗</button></div></div>
           <div class="action-group"><h3>その他スタッツ</h3><div class="action-grid stats-actions"><button data-action="OREB">OREB</button><button data-action="DREB">DREB</button><button data-action="AST">AST</button><button data-action="TOV">TOV</button><button data-action="STL">STL</button><button data-action="BLK">BLK</button><button class="foul-action" data-action="PF">PF ファウル</button></div></div>
           <div class="team-fouls"><span>Q TEAM FOUL</span><b>HOME <output id="teamFoulA">0</output></b><b>AWAY <output id="teamFoulB">0</output></b></div>
+          <div class="timeout-buttons"><button data-timeout="A">HOME TIMEOUT</button><button data-timeout="B">AWAY TIMEOUT</button></div>
           <div class="history-buttons"><button id="undoButton">↶ UNDO</button><button id="redoButton">REDO ↷</button></div>
           <button id="voiceButton" class="voice-button">🎙 音声入力</button><p id="voiceStatus" class="voice-status">選手を選択後「5番 2点」などと話してください</p>
         </section>
@@ -51,7 +52,7 @@
       </div>
     </section>
 
-    <section id="sheetView" class="view"><div class="view-heading"><div><small>OFFICIAL RECORD</small><h1>スコアシート</h1></div><button id="printButton">印刷 / PDF</button></div><div id="scoreSheet" class="paper"></div></section>
+    <section id="sheetView" class="view"><div class="view-heading"><div><small>OFFICIAL RECORD</small><h1>公式スコアシート表示</h1></div><div class="sheet-tools"><button id="fitButton">全体表示</button><button id="zoomButton">拡大</button><button id="printButton">印刷 / PDF</button></div></div><div class="paper-stage"><div id="scoreSheet" class="paper official-sheet"></div></div></section>
     <section id="statsView" class="view"><div class="view-heading"><div><small>BOX SCORE</small><h1>スタッツ</h1></div></div><div id="statsContent"></div></section>
     <section id="pbpView" class="view"><div class="view-heading"><div><small>GAME FLOW</small><h1>プレイ・バイ・プレイ</h1></div></div><div id="pbpContent" class="pbp-list"></div></section>
   </main>
