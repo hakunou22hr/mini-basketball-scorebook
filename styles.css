@@ -106,7 +106,7 @@
 .official-score-box{height:32mm;display:grid;grid-template-columns:14mm 36mm 13mm 36mm;overflow:hidden}
 .score-label-col{display:flex;flex-direction:column;align-items:center;padding-top:2mm;font-size:6px;line-height:1.2}
 .score-label-col b{font-weight:400}.score-label-col span{margin-top:1mm;font-size:5px}
-.score-team{height:32mm;display:grid;grid-template-rows:5mm 18mm 8mm;justify-items:center;align-content:start;text-align:center}
+.official-score-box .score-team{height:32mm;padding:0;display:grid;grid-template-columns:1fr;grid-template-rows:5mm 18mm 8mm;justify-items:center;align-content:start;text-align:center}
 .score-team-label{align-self:center;font-size:6px;line-height:1;white-space:nowrap}
 .score-team-label span{font-size:5px}
 .score-total{box-sizing:border-box;width:18mm;height:18mm;border:1px solid #111;font:700 15px/17.5mm Arial,sans-serif}

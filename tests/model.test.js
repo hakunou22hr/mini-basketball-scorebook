@@ -193,7 +193,11 @@ assert.match(js, /<div class="score-label-col"><b>スコア<\/b><span>Score<\/sp
 assert.match(js, /<div class="score-middle" aria-hidden="true"><div class="score-dashes"><span>－<\/span><span>－<\/span><span>－<\/span><span>－<\/span><\/div><span class="overtime-label">（延長）<\/span><\/div>/);
 assert.match(css, /\.official-score-box\{height:32mm;display:grid;grid-template-columns:14mm 36mm 13mm 36mm;overflow:hidden\}/);
 assert.match(css, /\.score-total\{[^}]*width:18mm;height:18mm;[^}]*border:1px solid #111/);
+assert.match(css, /\.official-score-box \.score-team\{[^}]*padding:0;[^}]*grid-template-columns:1fr;[^}]*grid-template-rows:5mm 18mm 8mm/);
+assert.doesNotMatch(css, /^\.score-team\{height:32mm/m);
 assert.match(js, /<div class="score-team-label">チームA <span>Team A<\/span><\/div>/);
+assert.match(js, /class="score-total" aria-label="チームA 合計得点"/);
+assert.match(js, /class="score-total" aria-label="チームB 合計得点"/);
 assert.match(js, /日付　　年　　月　　日/);
 assert.match(js, /applySheetZoom\('fit'\)/);
 assert.match(js, /applySheetZoom\('zoom'\)/);
