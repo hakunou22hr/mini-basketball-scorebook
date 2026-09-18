@@ -171,6 +171,11 @@ assert.match(css, /\.sheet-viewport>\.official-sheet\{width:210mm;height:297mm;m
 assert.match(css, /\.run-block col\.scorer-col\{width:38%\}/);
 assert.match(css, /\.run-block col\.score-col\{width:12%\}/);
 assert.match(css, /\.run-block \.scorer-mark\{[^}]*font-size:8px;[^}]*font-weight:900/);
+assert.match(css, /\.official-meta\{height:42mm;grid-template-columns:102mm 1fr\}/);
+assert.match(css, /\.officials label\{display:grid;grid-template-columns:minmax\(0,15mm\) minmax\(0,1fr\)/);
+assert.match(css, /\.sheet-body\{height:221mm;margin-top:3mm;grid-template-columns:102mm 14mm 76mm/);
+assert.match(js, /<span class="meta-label">\$\{label\}<\/span>/);
+assert.match(js, /<div class="score-separator"><i>−<\/i><small>（延長）<\/small><\/div>/);
 assert.match(js, /applySheetZoom\('fit'\)/);
 assert.match(js, /applySheetZoom\('zoom'\)/);
 console.log('Quarter-summary and fixed-page zoom checks passed');
