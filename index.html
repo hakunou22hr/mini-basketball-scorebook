@@ -2,86 +2,60 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#f45b34">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#13283a">
   <title>MINI-BASKETBALL SCOREBOOK</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="トップへ">
-      <span class="brand-ball" aria-hidden="true">●</span>
-      <span>MINI-BASKETBALL<br><b>SCOREBOOK</b></span>
-    </a>
+    <a class="brand" href="#" aria-label="トップへ"><span class="brand-ball">●</span><span>MINI-BASKETBALL<br><b>SCOREBOOK</b></span></a>
     <div class="game-meta">
-      <label>大会名<input id="tournament" value="U12 SPRING CUP" aria-label="大会名"></label>
+      <label>大会名<input id="tournament" aria-label="大会名"></label>
       <label>試合日<input id="gameDate" type="date" aria-label="試合日"></label>
     </div>
     <button class="icon-button" id="resetButton" type="button" title="試合をリセット">↻</button>
   </header>
 
+  <section class="scorebar" aria-label="スコアボード">
+    <div class="score-team home"><span>HOME</span><input id="teamAName" aria-label="ホームチーム名"><output id="scoreA">0</output></div>
+    <div class="game-center">
+      <div class="period-switcher"><button id="periodDown">−</button><strong id="period">1Q</strong><button id="periodUp">＋</button></div>
+      <div id="clock" class="clock" role="timer">06:00</div>
+      <div class="clock-buttons"><button id="clockToggle">START</button><button id="clockReset">RESET</button></div>
+      <div class="possession"><button data-possession="A">◀ HOME</button><span>POSSESSION</span><button data-possession="B">AWAY ▶</button></div>
+    </div>
+    <div class="score-team away"><span>AWAY</span><input id="teamBName" aria-label="アウェーチーム名"><output id="scoreB">0</output></div>
+  </section>
+
+  <nav class="main-tabs" aria-label="表示切替">
+    <button class="active" data-view="input">入力</button>
+    <button data-view="sheet">スコアシート</button>
+    <button data-view="stats">スタッツ</button>
+    <button data-view="pbp">プレイ・バイ・プレイ</button>
+  </nav>
+
   <main>
-    <section class="scoreboard" aria-label="スコアボード">
-      <div class="team team-a">
-        <span class="team-label">HOME</span>
-        <input class="team-name" id="teamAName" value="SKY HAWKS" aria-label="ホームチーム名">
-        <output class="score" id="scoreA">0</output>
-        <div class="score-actions" aria-label="ホーム得点">
-          <button class="score-correction" data-team="A" data-points="-1" aria-label="ホームの得点を1点減らす">−1</button>
-          <button data-team="A" data-points="1">+1</button>
-          <button data-team="A" data-points="2">+2</button>
-          <button data-team="A" data-points="3">+3</button>
-        </div>
-      </div>
-
-      <div class="game-center">
-        <div class="period-switcher">
-          <button id="periodDown" aria-label="前のクォーター">−</button>
-          <div><small>PERIOD</small><strong id="period">1Q</strong></div>
-          <button id="periodUp" aria-label="次のクォーター">＋</button>
-        </div>
-        <div class="clock" id="clock" role="timer">06:00</div>
-        <button class="clock-toggle" id="clockToggle">START</button>
-        <button class="clock-reset" id="clockReset">6:00 に戻す</button>
-        <div class="possession" aria-label="ポゼッション">
-          <button data-possession="A" aria-label="ホームボール">◀</button>
-          <span>POSSESSION</span>
-          <button data-possession="B" aria-label="アウェーボール">▶</button>
-        </div>
-      </div>
-
-      <div class="team team-b">
-        <span class="team-label">AWAY</span>
-        <input class="team-name" id="teamBName" value="RED COMETS" aria-label="アウェーチーム名">
-        <output class="score" id="scoreB">0</output>
-        <div class="score-actions" aria-label="アウェー得点">
-          <button class="score-correction" data-team="B" data-points="-1" aria-label="アウェーの得点を1点減らす">−1</button>
-          <button data-team="B" data-points="1">+1</button>
-          <button data-team="B" data-points="2">+2</button>
-          <button data-team="B" data-points="3">+3</button>
-        </div>
+    <section id="inputView" class="view active">
+      <div class="input-layout">
+        <section class="roster-card home-card"><div class="card-title"><div><small>HOME</small><h2 id="homeRosterTitle"></h2></div><button data-add-player="A">＋ 選手</button></div><div class="roster-head"><span>NO.</span><span>PLAYER</span><span>PF</span></div><div id="rosterA" class="roster"></div></section>
+        <section class="action-panel">
+          <div id="selectionPrompt" class="selection"><small>SELECTED PLAYER</small><strong>選手を選択してください</strong></div>
+          <div class="action-group"><h3>得点</h3><div class="action-grid scoring"><button data-action="FTM">+1<small>FT成功</small></button><button data-action="2PM">+2<small>2P成功</small></button><button data-action="3PM">+3<small>3P成功</small></button><button class="miss" data-action="FTX">FT失敗</button><button class="miss" data-action="2PX">2P失敗</button><button class="miss" data-action="3PX">3P失敗</button></div></div>
+          <div class="action-group"><h3>その他スタッツ</h3><div class="action-grid stats-actions"><button data-action="OREB">OREB</button><button data-action="DREB">DREB</button><button data-action="AST">AST</button><button data-action="TOV">TOV</button><button data-action="STL">STL</button><button data-action="BLK">BLK</button><button class="foul-action" data-action="PF">PF ファウル</button></div></div>
+          <div class="team-fouls"><span>Q TEAM FOUL</span><b>HOME <output id="teamFoulA">0</output></b><b>AWAY <output id="teamFoulB">0</output></b></div>
+          <div class="history-buttons"><button id="undoButton">↶ UNDO</button><button id="redoButton">REDO ↷</button></div>
+          <button id="voiceButton" class="voice-button">🎙 音声入力</button><p id="voiceStatus" class="voice-status">選手を選択後「5番 2点」などと話してください</p>
+        </section>
+        <section class="roster-card away-card"><div class="card-title"><div><small>AWAY</small><h2 id="awayRosterTitle"></h2></div><button data-add-player="B">＋ 選手</button></div><div class="roster-head"><span>NO.</span><span>PLAYER</span><span>PF</span></div><div id="rosterB" class="roster"></div></section>
       </div>
     </section>
 
-    <section class="workspace">
-      <div class="panel roster-panel">
-        <div class="panel-heading"><div><span>PLAYERS</span><h2>選手・ファウル</h2></div><button id="addPlayer">＋ 選手追加</button></div>
-        <div class="team-tabs" role="tablist">
-          <button class="active" data-roster="A">HOME</button><button data-roster="B">AWAY</button>
-        </div>
-        <div class="roster-header"><span>NO.</span><span>PLAYER</span><span>FOULS</span></div>
-        <div id="roster" class="roster"></div>
-      </div>
-
-      <div class="panel log-panel">
-        <div class="panel-heading"><div><span>GAME FLOW</span><h2>プレイ記録</h2></div><button id="undoButton" disabled>↶ ひとつ戻す</button></div>
-        <div id="emptyLog" class="empty-log"><div class="empty-ball">●</div><b>まだ記録がありません</b><p>得点やファウルを入力すると<br>ここに表示されます</p></div>
-        <ol id="eventLog" class="event-log" aria-live="polite"></ol>
-      </div>
-    </section>
+    <section id="sheetView" class="view"><div class="view-heading"><div><small>OFFICIAL RECORD</small><h1>スコアシート</h1></div><button id="printButton">印刷 / PDF</button></div><div id="scoreSheet" class="paper"></div></section>
+    <section id="statsView" class="view"><div class="view-heading"><div><small>BOX SCORE</small><h1>スタッツ</h1></div></div><div id="statsContent"></div></section>
+    <section id="pbpView" class="view"><div class="view-heading"><div><small>GAME FLOW</small><h1>プレイ・バイ・プレイ</h1></div></div><div id="pbpContent" class="pbp-list"></div></section>
   </main>
-
-  <footer><span>MINI-BASKETBALL SCOREBOOK</span><span>データはこの端末に自動保存されます</span></footer>
+  <footer><span>MINI-BASKETBALL SCOREBOOK · U12 · 4Q × 6 MIN</span><span>データはこの端末に自動保存されます</span></footer>
   <div class="toast" id="toast" role="status"></div>
   <script src="app.js"></script>
 </body>
