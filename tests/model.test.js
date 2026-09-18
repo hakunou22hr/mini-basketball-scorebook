@@ -1,5 +1,5 @@
 const assert = require('node:assert/strict');
-const { defaultState, createEvent, derive, runningScoreCells } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells, getQuarterInk, periodLabel } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -41,10 +41,10 @@ state.events.splice(scoreIndex, 0, scoreEvent);
 assert.equal(derive(state).scores.A, 3);
 const runningScore = runningScoreCells(derive(state));
 assert.match(runningScore, /<th>A<\/th><th>得点<\/th><th>得点<\/th><th>B<\/th>/);
-assert.match(runningScore, /scorer-mark period-odd[^>]*>7<\/span>/);
-assert.match(runningScore, /score-slash period-odd/);
-assert.match(runningScore, /scorer-mark period-even[^>]*>7<\/span>/);
-assert.match(runningScore, /score-slash period-even/);
+assert.match(runningScore, /scorer-mark ink-red[^>]*>7<\/span>/);
+assert.match(runningScore, /score-slash ink-red/);
+assert.match(runningScore, /scorer-mark ink-black[^>]*>7<\/span>/);
+assert.match(runningScore, /score-slash ink-black/);
 console.log('23 synchronized JBA U12 scorebook model checks passed');
 
 // TIMEOUT uses the common event stream for PBP, scoresheet counts, undo, and redo.
@@ -74,3 +74,15 @@ state.period = 4;
 const overtime = createPeriodChangeEvent(state, 'period-4-ot');
 assert.equal(overtime.toPeriod, 5); assert.equal(overtime.toSeconds, 180);
 console.log('TIMEOUT and quarter transition checks passed');
+
+
+// Official ink is shared by running score, player fouls, and team fouls.
+assert.deepEqual([1,2,3,4,5,6].map(getQuarterInk), ['red','black','red','black','red','black']);
+assert.deepEqual([1,2,3,4,5,6].map(periodLabel), ['1Q','2Q','3Q','4Q','OT','OT2']);
+state.period = 5;
+const secondOvertime = createPeriodChangeEvent(state, 'period-ot-ot2');
+assert.equal(secondOvertime.toPeriod, 6); assert.equal(secondOvertime.toSeconds, 180);
+state.period = 3;
+const q3Foul = createEvent(state, 'A', home.id, 'PF', 'q3-foul'); state.events.push(q3Foul);
+assert.deepEqual(derive(state).stats.A[home.id].personalFouls.slice(-1), [3]);
+console.log('Quarter ink and multiple-overtime checks passed');
