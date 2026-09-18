@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { defaultState, createEvent, derive, runningScoreCells, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells, quarterSummaryCells, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -150,3 +150,27 @@ assert.equal((runningHtml.match(/<th class="running-score team-b-score-number/g)
 assert.equal((runningHtml.match(/<td>/g)||[]).length, 240);
 assert.match(fs.readFileSync(require.resolve('../styles.css'), 'utf8'), /\.run-block \.team-b-score-number\{background:#eee;/);
 console.log('Participation notation and running-score proportions checks passed');
+
+// The header uses the same derived quarter summary as every other score display.
+const summaryState = defaultState();
+const summaryPlayer = summaryState.playersA[0];
+['2PM','FTM','3PM','2PM','FTM'].forEach((action,index) => {
+  summaryState.period = index + 1;
+  summaryState.events.push(createEvent(summaryState, 'A', summaryPlayer.id, action, `summary-${index}`));
+});
+const summaryData = derive(summaryState);
+assert.deepEqual(summaryData.quarterScores.A, [2,1,3,2,1]);
+assert.equal(quarterSummaryCells(summaryData, 'A'), '<span><small>Q1</small><b>2</b></span><span><small>Q2</small><b>1</b></span><span><small>Q3</small><b>3</b></span><span><small>Q4</small><b>2</b></span><span><small>OT</small><b>1</b></span>');
+
+// Zoom is isolated on the wrapper/page transform and never changes A4 dimensions.
+const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
+const css = fs.readFileSync(require.resolve('../styles.css'), 'utf8');
+const js = fs.readFileSync(require.resolve('../app.js'), 'utf8');
+assert.match(html, /id="sheetStage" class="paper-stage"><div id="sheetViewport" class="sheet-viewport zoom-fit"><div id="scoreSheet"/);
+assert.match(css, /\.sheet-viewport>\.official-sheet\{width:210mm;height:297mm;margin:0;transform:scale\(var\(--sheet-scale\)\);transform-origin:top left\}/);
+assert.match(css, /\.run-block col\.scorer-col\{width:38%\}/);
+assert.match(css, /\.run-block col\.score-col\{width:12%\}/);
+assert.match(css, /\.run-block \.scorer-mark\{[^}]*font-size:8px;[^}]*font-weight:900/);
+assert.match(js, /applySheetZoom\('fit'\)/);
+assert.match(js, /applySheetZoom\('zoom'\)/);
+console.log('Quarter-summary and fixed-page zoom checks passed');
