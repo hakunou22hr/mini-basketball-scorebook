@@ -71,3 +71,51 @@
   .sheet-viewport{width:210mm!important;height:297mm!important;margin:0;transform:none}
   .sheet-viewport>.official-sheet{width:210mm;height:297mm;margin:0;transform:none!important}
 }
+
+/* Official-form geometry. All dimensions stay in the A4 page coordinate system. */
+.official-title{height:11mm;grid-template-columns:31mm 1fr}
+.official-title h1{text-align:center;font-size:15px;letter-spacing:.25px}
+.official-meta{height:42mm;grid-template-columns:102mm 1fr}
+.tournament-row{height:10mm}
+.official-meta label{min-width:0;overflow:hidden}
+.official-meta .meta-label{flex:0 0 auto;white-space:nowrap}
+.official-meta input{min-width:0;padding:0 .5mm;border-bottom:1px dotted #777;line-height:3.5mm}
+.official-score{height:32mm;grid-template-columns:15mm minmax(0,1fr) 13mm minmax(0,1fr);padding:1.5mm 2mm}
+.score-label{padding-top:2mm;font-weight:700;text-align:center}
+.score-label small{margin-top:.5mm;font-weight:400}
+.score-team-box{min-width:0}
+.score-team-box>b{font-size:6.5px}
+.score-team-box>strong{width:18mm;height:12mm;margin:.6mm auto;font-size:15px;line-height:12mm}
+.score-separator{height:22mm;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3mm}
+.score-separator i{font-size:15px;line-height:1}
+.score-separator small{white-space:nowrap;font-size:5.2px}
+.score-team-box .quarter-summary{height:8mm}
+.score-team-box .quarter-summary small,.score-team-box .quarter-summary b{padding:.45mm 0}
+.meta-right{grid-template-rows:7mm 7mm 28mm}
+.date-time,.venue-game{grid-template-columns:27mm minmax(0,1fr)}
+.date-time label,.venue-game label{gap:1mm;padding:.8mm 1.2mm;font-size:5.5px}
+.date-time input,.venue-game input{font-size:5.8px}
+.officials{grid-template-columns:1fr 1fr;grid-template-rows:repeat(3,1fr);min-height:0}
+.officials label{display:grid;grid-template-columns:minmax(0,15mm) minmax(0,1fr);align-items:center;gap:.6mm;min-width:0;padding:.7mm 1mm;font-size:5px;line-height:1.05}
+.officials .meta-label{overflow:hidden;text-overflow:clip}
+.officials input{width:100%;height:3.5mm;font-size:5.5px}
+.officials label:last-child .meta-label{font-size:4.35px;letter-spacing:-.15px}
+
+.sheet-body{height:221mm;margin-top:3mm;grid-template-columns:102mm 14mm 76mm;gap:3mm}
+.teams-column{grid-template-rows:107mm 107mm 3mm;gap:2mm}
+.official-team{height:107mm}
+.team-band{height:14mm;grid-template-columns:minmax(0,1fr) 12mm 28mm;padding:1.2mm 1.5mm}
+.team-band>div:first-child{min-width:0;overflow:hidden}
+.team-band>div:first-child b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sheet-timeouts>div{height:5mm}
+.players-table{height:92mm}
+.players-table .row-no{width:5mm}.players-table .license{width:15mm}.players-table .player-name{width:33mm}.players-table .uniform{width:6mm}.players-table .period-col{width:5mm}.players-table .foul-col{width:4.6mm}
+.players-table th,.players-table td{height:4.4mm}
+.fouls-column{grid-template-rows:107mm 107mm;gap:2mm}
+.sheet-team-fouls{margin-top:14mm}
+.official-running{height:216mm}
+.running-columns,.run-block{height:208mm}
+.run-block th,.run-block td{height:4.95mm}
+.result{right:5.5mm;bottom:6mm;height:12mm}
+.result>div{min-width:0}
+.result strong,.result input{min-width:0;overflow:hidden;white-space:nowrap}
