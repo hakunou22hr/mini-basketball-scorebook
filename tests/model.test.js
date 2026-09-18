@@ -44,7 +44,7 @@ assert.match(runningScore, /<th>A<\/th><th>得点<\/th><th>得点<\/th><th>B<\/t
 assert.match(runningScore, /scorer-mark ink-red[^>]*>7<\/span>/);
 assert.match(runningScore, /score-slash ink-red/);
 assert.match(runningScore, /scorer-mark ink-black[^>]*>7<\/span>/);
-assert.match(runningScore, /score-slash ink-black/);
+assert.match(runningScore, /score-dot ink-black/);
 console.log('23 synchronized JBA U12 scorebook model checks passed');
 
 // TIMEOUT uses the common event stream for PBP, scoresheet counts, undo, and redo.
@@ -77,7 +77,7 @@ console.log('TIMEOUT and quarter transition checks passed');
 
 
 // Official ink is shared by running score, player fouls, and team fouls.
-assert.deepEqual([1,2,3,4,5,6].map(getQuarterInk), ['red','black','red','black','red','black']);
+assert.deepEqual([1,2,3,4,5,6].map(getQuarterInk), ['red','black','red','black','black','black']);
 assert.deepEqual([1,2,3,4,5,6].map(periodLabel), ['1Q','2Q','3Q','4Q','OT','OT2']);
 state.period = 5;
 const secondOvertime = createPeriodChangeEvent(state, 'period-ot-ot2');
@@ -86,3 +86,31 @@ state.period = 3;
 const q3Foul = createEvent(state, 'A', home.id, 'PF', 'q3-foul'); state.events.push(q3Foul);
 assert.deepEqual(derive(state).stats.A[home.id].personalFouls.slice(-1), [3]);
 console.log('Quarter ink and multiple-overtime checks passed');
+
+// JBA U12 running score: only the reached total is marked, using the shot-specific symbol.
+const runningState = defaultState();
+const scorers = runningState.playersA.slice(0,4);
+scorers.forEach((player,index) => { player.number = ['4','5','6','8'][index]; });
+runningState.events.push(createEvent(runningState, 'A', scorers[0].id, '2PM', 'run-2-a'));
+runningState.events.push(createEvent(runningState, 'A', scorers[1].id, '2PM', 'run-2-b'));
+runningState.events.push(createEvent(runningState, 'A', scorers[2].id, '3PM', 'run-3'));
+runningState.events.push(createEvent(runningState, 'A', scorers[3].id, 'FTM', 'run-ft'));
+let runningHtml = runningScoreCells(derive(runningState));
+const runningRow = n => runningHtml.match(/<tr><td>.*?<\/tr>/g)[n-1].match(/<tr><td>(.*?)<\/td><th[^>]*>\d+(.*?)<\/th><th/).slice(1);
+assert.equal(runningRow(1)[0], ''); assert.doesNotMatch(runningRow(1)[1], /score-slash|score-dot/);
+assert.match(runningRow(2)[0], />4<\/span>/); assert.match(runningRow(2)[1], /score-slash ink-red/);
+assert.equal(runningRow(3)[0], ''); assert.doesNotMatch(runningRow(3)[1], /score-slash|score-dot/);
+assert.match(runningRow(4)[0], />5<\/span>/); assert.match(runningRow(4)[1], /score-slash ink-red/);
+assert.equal(runningRow(5)[0], ''); assert.equal(runningRow(6)[0], '');
+assert.match(runningRow(7)[0], /three-point[^>]*>6<\/span>/); assert.match(runningRow(7)[1], /score-slash ink-red/);
+assert.match(runningRow(8)[0], />8<\/span>/); assert.match(runningRow(8)[1], /score-dot ink-red/); assert.doesNotMatch(runningRow(8)[1], /score-slash/);
+
+// A period change closes that period's final scoring event; game end upgrades the final event to double lines.
+runningState.events.push(createPeriodChangeEvent(runningState, 'run-q1-end'));
+runningHtml = runningScoreCells(derive(runningState));
+assert.match(runningRow(8)[0], /score-close-period/); assert.match(runningHtml, /running-score ink-red score-close score-close-period">8/);
+runningState.endTime = '12:34';
+runningHtml = runningScoreCells(derive(runningState));
+assert.match(runningRow(8)[0], /score-close-game/); assert.match(runningHtml, /running-score ink-red score-close score-close-game">8/);
+assert.match(runningRow(9)[1], /unused-score-slash/);
+console.log('JBA U12 running-score notation checks passed');
