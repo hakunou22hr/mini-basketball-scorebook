@@ -1,5 +1,6 @@
 const assert = require('node:assert/strict');
-const { defaultState, createEvent, derive, runningScoreCells, getQuarterInk, periodLabel, participationMark } = require('../app.js');
+const fs = require('node:fs');
+const { defaultState, createEvent, derive, runningScoreCells, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -40,7 +41,7 @@ assert.equal(data.scores.A, 1); assert.equal(data.stats.A[home.id].PTS, 1); asse
 state.events.splice(scoreIndex, 0, scoreEvent);
 assert.equal(derive(state).scores.A, 3);
 const runningScore = runningScoreCells(derive(state));
-assert.match(runningScore, /<th>A<\/th><th>得点<\/th><th>得点<\/th><th>B<\/th>/);
+assert.match(runningScore, /<th>A<\/th><th>得点<\/th><th class="team-b-score-number">得点<\/th><th>B<\/th>/);
 assert.match(runningScore, /scorer-mark ink-red[^>]*>7<\/span>/);
 assert.match(runningScore, /score-slash ink-red/);
 assert.match(runningScore, /scorer-mark ink-black[^>]*>7<\/span>/);
@@ -108,10 +109,10 @@ assert.match(runningRow(8)[0], />8<\/span>/); assert.match(runningRow(8)[1], /sc
 // A period change closes that period's final scoring event; game end upgrades the final event to double lines.
 runningState.events.push(createPeriodChangeEvent(runningState, 'run-q1-end'));
 runningHtml = runningScoreCells(derive(runningState));
-assert.match(runningRow(8)[0], /score-close-period/); assert.match(runningHtml, /running-score ink-red score-close score-close-period">8/);
+assert.match(runningRow(8)[0], /score-close-period/); assert.match(runningHtml, /running-score team-a-score-number ink-red score-close score-close-period">8/);
 runningState.endTime = '12:34';
 runningHtml = runningScoreCells(derive(runningState));
-assert.match(runningRow(8)[0], /score-close-game/); assert.match(runningHtml, /running-score ink-red score-close score-close-game">8/);
+assert.match(runningRow(8)[0], /score-close-game/); assert.match(runningHtml, /running-score team-a-score-number ink-red score-close score-close-game">8/);
 assert.match(runningRow(9)[1], /unused-score-slash/);
 console.log('JBA U12 running-score notation checks passed');
 
@@ -123,6 +124,29 @@ assert.equal(participationMark('out'), '＼');
 assert.equal(participationMark(null), '');
 assert.doesNotMatch(['in', 'out', true].map(participationMark).join(''), /✓/);
 
+// Entry and substitution slashes share the same quarter-color helper as scoring records.
+assert.deepEqual([1,2,3,4].map(getQuarterRecordColor), ['red','black','red','black']);
+assert.equal(getQuarterInk, getQuarterRecordColor);
+assert.deepEqual([1,2,3,4].map(participationRecordClass), [
+  'participation-mark ink-red',
+  'participation-mark ink-black',
+  'participation-mark ink-red',
+  'participation-mark ink-black'
+]);
+assert.deepEqual(['in','out'].flatMap(value => [1,2,3,4].map(quarter => [
+  participationMark(value), participationRecordClass(quarter)
+])), [
+  ['／','participation-mark ink-red'], ['／','participation-mark ink-black'],
+  ['／','participation-mark ink-red'], ['／','participation-mark ink-black'],
+  ['＼','participation-mark ink-red'], ['＼','participation-mark ink-black'],
+  ['＼','participation-mark ink-red'], ['＼','participation-mark ink-black']
+]);
+
 // Explicit colgroups keep scorer fields wider than the two score-number fields.
-assert.match(runningHtml, /<col class="scorer-col"><col class="score-col"><col class="score-col"><col class="scorer-col">/);
+assert.match(runningHtml, /<col class="scorer-col"><col class="score-col"><col class="score-col team-b-score-number"><col class="scorer-col">/);
+assert.equal((runningHtml.match(/<table class="run-block">/g)||[]).length, 3);
+assert.equal((runningHtml.match(/<th class="team-b-score-number">得点<\/th>/g)||[]).length, 3);
+assert.equal((runningHtml.match(/<th class="running-score team-b-score-number/g)||[]).length, 120);
+assert.equal((runningHtml.match(/<td>/g)||[]).length, 240);
+assert.match(fs.readFileSync(require.resolve('../styles.css'), 'utf8'), /\.run-block \.team-b-score-number\{background:#eee;/);
 console.log('Participation notation and running-score proportions checks passed');
