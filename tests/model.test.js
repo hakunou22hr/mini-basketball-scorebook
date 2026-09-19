@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { defaultState, createEvent, derive, runningScoreCells, quarterSummaryCells, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells, quarterScoreRows, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -160,7 +160,7 @@ const summaryPlayer = summaryState.playersA[0];
 });
 const summaryData = derive(summaryState);
 assert.deepEqual(summaryData.quarterScores.A, [2,1,3,2,1]);
-assert.equal(quarterSummaryCells(summaryData, 'A'), '<div class="score-period-cell"><span>Q1</span><strong>2</strong></div><div class="score-period-cell"><span>Q2</span><strong>1</strong></div><div class="score-period-cell"><span>Q3</span><strong>3</strong></div><div class="score-period-cell"><span>Q4</span><strong>2</strong></div><div class="score-period-cell"><span>OT</span><strong>1</strong></div>');
+assert.equal(quarterScoreRows(summaryData), '<div class="quarter-score-row"><span>第1Q / Quarter 1</span><strong>2</strong><i>－</i><strong>0</strong></div><div class="quarter-score-row"><span>第2Q / Quarter 2</span><strong>1</strong><i>－</i><strong>0</strong></div><div class="quarter-score-row"><span>第3Q / Quarter 3</span><strong>3</strong><i>－</i><strong>0</strong></div><div class="quarter-score-row"><span>第4Q / Quarter 4</span><strong>2</strong><i>－</i><strong>0</strong></div><div class="quarter-score-row"><span>Over time</span><strong>1</strong><i>－</i><strong>0</strong></div>');
 
 // Zoom is isolated on the wrapper/page transform and never changes A4 dimensions.
 const html = fs.readFileSync(require.resolve('../index.html'), 'utf8');
@@ -190,14 +190,14 @@ assert.doesNotMatch(css, /^\.(official-meta|officials|official-score)\{/m);
 assert.match(js, /<span class="meta-label">\$\{label\}<\/span>/);
 assert.match(js, /<div class="official-score-box" aria-label="スコア">/);
 assert.match(js, /<div class="score-label-col"><b>スコア<\/b><span>Score<\/span><\/div>/);
-assert.match(js, /<div class="score-middle" aria-hidden="true"><div class="score-dashes"><span>－<\/span><span>－<\/span><span>－<\/span><span>－<\/span><\/div><span class="overtime-label">（延長）<\/span><\/div>/);
-assert.match(css, /\.official-score-box\{height:32mm;display:grid;grid-template-columns:14mm 36mm 13mm 36mm;overflow:hidden\}/);
-assert.match(css, /\.score-total\{[^}]*width:18mm;height:18mm;[^}]*border:1px solid #111/);
-assert.match(css, /\.official-score-box \.score-team\{[^}]*padding:0;[^}]*grid-template-columns:1fr;[^}]*grid-template-rows:5mm 18mm 8mm/);
-assert.doesNotMatch(css, /^\.score-team\{height:32mm/m);
-assert.match(js, /<div class="score-team-label">チームA <span>Team A<\/span><\/div>/);
-assert.match(js, /class="score-total" aria-label="チームA 合計得点"/);
-assert.match(js, /class="score-total" aria-label="チームB 合計得点"/);
+assert.match(js, /<div class="score-totals"><span>A 得点<\/span><strong aria-label="チームA 合計得点">/);
+assert.match(js, /<i>－<\/i><strong aria-label="チームB 合計得点">/);
+assert.match(js, /<span>B 得点<\/span>/);
+assert.match(js, /class="quarter-score-rows" aria-label="クォーター別得点">\$\{quarterScoreRows\(d\)\}/);
+assert.match(css, /\.official-score-box\{height:32mm;display:grid;grid-template-columns:14mm minmax\(0,1fr\);overflow:hidden\}/);
+assert.match(css, /\.quarter-score-rows\{display:grid;grid-template-rows:repeat\(5,1fr\)\}/);
+assert.doesNotMatch(js, /score-periods|score-period-cell|quarterSummaryCells/);
+assert.doesNotMatch(css, /\.score-periods|\.score-period-cell/);
 assert.match(js, /日付　　年　　月　　日/);
 assert.match(js, /applySheetZoom\('fit'\)/);
 assert.match(js, /applySheetZoom\('zoom'\)/);
