@@ -18,14 +18,14 @@
   </header>
 
   <section class="scorebar" aria-label="スコアボード">
-    <div class="score-team home"><span>HOME</span><input id="teamAName" aria-label="ホームチーム名"><output id="scoreA">0</output></div>
+    <div class="score-team home"><span>TEAM A</span><input id="teamAName" data-team-name="A" aria-label="チームA名" placeholder="SKY HAWKS" autocomplete="off"><output id="scoreA">0</output></div>
     <div class="game-center">
       <div class="current-period" aria-label="現在のクォーター"><strong id="period">1Q</strong><small>CURRENT Q</small></div>
       <div id="clock" class="clock" role="timer">06:00</div>
       <div class="clock-buttons"><button id="clockToggle">START</button><button id="clockReset">RESET</button></div>
       <div class="possession"><button data-possession="A">◀ HOME</button><span>POSSESSION</span><button data-possession="B">AWAY ▶</button></div>
     </div>
-    <div class="score-team away"><span>AWAY</span><input id="teamBName" aria-label="アウェーチーム名"><output id="scoreB">0</output></div>
+    <div class="score-team away"><span>TEAM B</span><input id="teamBName" data-team-name="B" aria-label="チームB名" placeholder="RED COMETS" autocomplete="off"><output id="scoreB">0</output></div>
   </section>
 
   <nav class="main-tabs" aria-label="表示切替">
@@ -37,6 +37,11 @@
 
   <main>
     <section id="inputView" class="view active">
+      <section class="team-name-editor" aria-labelledby="teamNameEditorTitle">
+        <div><small>TEAM SETTINGS</small><h2 id="teamNameEditorTitle">チーム名の設定</h2><p>入力すると各画面とスコアシートにすぐ反映されます</p></div>
+        <label><span>チームA名</span><input data-team-name="A" aria-label="入力画面のチームA名" placeholder="SKY HAWKS" autocomplete="off"></label>
+        <label><span>チームB名</span><input data-team-name="B" aria-label="入力画面のチームB名" placeholder="RED COMETS" autocomplete="off"></label>
+      </section>
       <div class="input-layout">
         <section class="roster-card home-card"><div class="card-title"><div><small>HOME</small><h2 id="homeRosterTitle"></h2></div><button data-add-player="A">＋ 選手</button></div><div class="roster-head"><span>NO.</span><span>PLAYER</span><span>PF</span></div><div id="rosterA" class="roster"></div></section>
         <section class="action-panel">
