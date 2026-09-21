@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { defaultState, createEvent, derive, runningScoreCells, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
+const { defaultState, createEvent, derive, runningScoreCells, inputRunningScore, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -238,4 +238,22 @@ assert.match(js, /setActiveStatButton\(action\);addEvent\(state\.selected\.team,
 assert.match(html, /href="styles\.css\?v=20260921-3"/);
 assert.match(html, /src="app\.js\?v=20260921-3"/);
 console.log('Persistent stat feedback and cache-busting checks passed');
+
+// Compact roster keeps quarter selectors on one horizontal row and the input view has a live running-score card.
+const liveState = defaultState();
+const liveA = liveState.playersA[0];
+const liveB = liveState.playersB[0];
+liveState.events.push(createEvent(liveState, 'A', liveA.id, '2PM', 'live-a'));
+liveState.events.push(createEvent(liveState, 'B', liveB.id, 'FTM', 'live-b'));
+const liveHtml = inputRunningScore(derive(liveState));
+assert.match(liveHtml, /class="live-run-table"/);
+assert.match(liveHtml, /1–40/);
+assert.match(liveHtml, /scorer-mark ink-red[^>]*>4</span>/);
+assert.match(html, /id="inputRunningScore" class="input-running-score"/);
+assert.match(css, /.input-layout{[sS]*?grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px)/);
+assert.match(css, /.player-row .period-checks{[sS]*?grid-template-columns:repeat(4,minmax(0,1fr))/);
+assert.match(css, /.roster{max-height:620px;overflow-y:auto/);
+assert.match(html, /styles.css?v=20260921-4/);
+assert.match(html, /app.js?v=20260921-4/);
+console.log('Compact roster and input running-score checks passed');
 
