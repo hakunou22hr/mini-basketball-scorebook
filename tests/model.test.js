@@ -234,3 +234,11 @@ assert.match(js, /function flashActionFeedback\(button\)/);
 assert.match(js, /flashActionFeedback\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
 console.log('Stat action tap-feedback checks passed');
 
+// iPad/Safari must fetch the current CSS/JS and stat feedback must override positional/default colors.
+assert.match(html, /href="styles\.css\?v=20260921-2"/);
+assert.match(html, /src="app\.js\?v=20260921-2"/);
+assert.match(css, /\.stats-actions button:not\(\.foul-action\)\{[^}]*background:#fff!important/);
+assert.match(css, /\.stats-actions button:not\(\.foul-action\):active,\.stats-actions button:not\(\.foul-action\)\.tap-feedback\{[^}]*background:var\(--red\)!important/);
+assert.match(js, /setTimeout\(\(\)=>button\.classList\.remove\('tap-feedback'\),700\)/);
+console.log('iPad stat-feedback cache-busting checks passed');
+
