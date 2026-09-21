@@ -116,3 +116,113 @@
 .officials-grid label:last-child{grid-template-columns:26mm minmax(0,1fr)}
 .officials-grid label:last-child .meta-label{font-size:4.2px;letter-spacing:-.15mm}
 .officials-grid input{width:100%;height:4mm;min-width:0;padding:0 .5mm;border:0;border-bottom:1px dotted #777;background:transparent;font-size:5.8px}
+
+/* Compact input roster and live running-score panel */
+.input-layout{
+  width:min(1720px,calc(100% - 24px));
+  grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px);
+  gap:10px;
+  align-items:start;
+}
+.roster{max-height:620px;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
+.roster-head{position:sticky;top:0;z-index:2}
+.player-row{
+  min-height:64px;
+  padding:4px 8px 5px;
+  grid-template-columns:38px minmax(0,1fr) 26px;
+  grid-template-rows:28px 27px;
+  column-gap:4px;
+  row-gap:2px;
+}
+.player-row input{padding:2px 3px;font-size:12px}
+.player-row input:first-child{font-size:16px}
+.player-row b{font-size:13px}
+.player-row .period-checks{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:4px;
+  margin:0;
+}
+.player-row .period-checks label{
+  min-width:0;
+  display:grid;
+  grid-template-columns:auto minmax(0,1fr);
+  align-items:center;
+  gap:2px;
+  font:700 9px 'Barlow Condensed',sans-serif;
+  white-space:nowrap;
+}
+.player-row .period-checks select{
+  width:100%;
+  max-width:none;
+  min-width:0;
+  height:22px;
+  padding:0 2px;
+  font-size:8px;
+}
+.input-running-card{
+  min-width:0;
+  background:var(--cream);
+  border:1px solid var(--line);
+  box-shadow:4px 4px 0 #ddd8cd;
+}
+.input-running-title{
+  height:72px;
+  padding:11px 14px;
+  color:white;
+  background:var(--ink);
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-content:center;
+}
+.input-running-title small{grid-column:1/-1;color:#ff918a;font:700 8px 'Barlow Condensed';letter-spacing:2px}
+.input-running-title h2{margin:1px 0;font:800 18px 'Barlow Condensed'}
+.input-running-title span{align-self:center;color:#aebbc5;font:700 8px 'Barlow Condensed';letter-spacing:1px}
+.input-running-score{
+  position:relative;
+  max-height:620px;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  background:#fff;
+}
+.live-run-range{
+  position:sticky;
+  top:0;
+  z-index:3;
+  padding:4px 8px;
+  color:var(--muted);
+  background:#f3f1eb;
+  border-bottom:1px solid var(--line);
+  font:700 9px 'Barlow Condensed';
+  text-align:right;
+}
+.live-run-table{width:100%;border-collapse:collapse;table-layout:fixed}
+.live-run-table col.live-scorer{width:32%}
+.live-run-table col.live-score{width:18%}
+.live-run-table th,.live-run-table td{
+  height:24px;
+  padding:0 2px;
+  border:1px solid #d9d9d9;
+  background:#fff;
+  font:700 10px Arial,sans-serif;
+  text-align:center;
+}
+.live-run-table thead th{position:sticky;top:24px;z-index:2;height:28px;background:#f0eee8;font-size:10px}
+.live-run-table .live-score-b{background:#eee}
+.live-running-score{position:relative}
+.live-run-table .scorer-mark{min-width:20px;padding:0 2px;font-size:12px;line-height:20px;font-weight:900}
+.live-run-table .scorer-mark.three-point{height:20px;line-height:18px}
+.live-run-table .score-dot{font-size:9px}
+.live-run-table tr.live-current>th{outline:2px solid var(--orange);outline-offset:-2px}
+@media(max-width:1180px){
+  .input-layout{grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr)}
+  .input-running-card{grid-column:1/-1}
+  .input-running-score{max-height:360px}
+}
+@media(max-width:760px){
+  .input-layout{grid-template-columns:1fr}
+  .input-running-card{grid-column:auto}
+  .roster{max-height:520px}
+}
+
