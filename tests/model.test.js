@@ -226,19 +226,16 @@ assert.match(js, /state\[`team\$\{teamName\}Name`\]=e.target.value;render\(\);re
 assert.match(js, /localStorage.setItem\(STORAGE_KEY/);
 console.log('Quarter-summary and fixed-page zoom checks passed');
 
-// Stat action buttons provide visible red tap feedback without making AST permanently orange.
+// Stat action buttons stay visibly red until another stat is selected.
 assert.match(css, /\.scoring button:nth-child\(3\)\{background:var\(--orange\)\}/);
 assert.doesNotMatch(css, /\.action-grid button:nth-child\(3\)\{background:var\(--orange\)\}/);
-assert.match(css, /\.stats-actions button:active,\.stats-actions button\.tap-feedback\{[^}]*background:var\(--red\)/);
-assert.match(js, /function flashActionFeedback\(button\)/);
-assert.match(js, /flashActionFeedback\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
-console.log('Stat action tap-feedback checks passed');
-
-// iPad/Safari must fetch the current CSS/JS and stat feedback must override positional/default colors.
-assert.match(html, /href="styles\.css\?v=20260921-2"/);
-assert.match(html, /src="app\.js\?v=20260921-2"/);
 assert.match(css, /\.stats-actions button:not\(\.foul-action\)\{[^}]*background:#fff!important/);
-assert.match(css, /\.stats-actions button:not\(\.foul-action\):active,\.stats-actions button:not\(\.foul-action\)\.tap-feedback\{[^}]*background:var\(--red\)!important/);
-assert.match(js, /setTimeout\(\(\)=>button\.classList\.remove\('tap-feedback'\),700\)/);
-console.log('iPad stat-feedback cache-busting checks passed');
+assert.match(css, /\.stats-actions button:not\(\.foul-action\):active,\.stats-actions button:not\(\.foul-action\)\.stat-active\{[^}]*background:var\(--red\)!important/);
+assert.match(js, /function setActiveStatButton\(button\)/);
+assert.match(js, /classList\.toggle\('stat-active',active\)/);
+assert.match(js, /setAttribute\('aria-pressed',active\?'true':'false'\)/);
+assert.match(js, /setActiveStatButton\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
+assert.match(html, /href="styles\.css\?v=20260921-3"/);
+assert.match(html, /src="app\.js\?v=20260921-3"/);
+console.log('Persistent stat feedback and cache-busting checks passed');
 
