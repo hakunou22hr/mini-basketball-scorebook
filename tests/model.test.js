@@ -225,3 +225,12 @@ assert.match(js, /querySelectorAll\(`\[data-team-name=/);
 assert.match(js, /state\[`team\$\{teamName\}Name`\]=e.target.value;render\(\);return/);
 assert.match(js, /localStorage.setItem\(STORAGE_KEY/);
 console.log('Quarter-summary and fixed-page zoom checks passed');
+
+// Stat action buttons provide visible red tap feedback without making AST permanently orange.
+assert.match(css, /\.scoring button:nth-child\(3\)\{background:var\(--orange\)\}/);
+assert.doesNotMatch(css, /\.action-grid button:nth-child\(3\)\{background:var\(--orange\)\}/);
+assert.match(css, /\.stats-actions button:active,\.stats-actions button\.tap-feedback\{[^}]*background:var\(--red\)/);
+assert.match(js, /function flashActionFeedback\(button\)/);
+assert.match(js, /flashActionFeedback\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
+console.log('Stat action tap-feedback checks passed');
+
