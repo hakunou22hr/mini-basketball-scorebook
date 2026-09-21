@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#13283a">
   <title>MINI-BASKETBALL SCOREBOOK</title>
-  <link rel="stylesheet" href="styles.css?v=20260921-3">
+  <link rel="stylesheet" href="styles.css?v=20260921-4">
 </head>
 <body>
   <header class="topbar">
@@ -55,6 +55,7 @@
           <button id="voiceButton" class="voice-button">🎙 音声入力</button><p id="voiceStatus" class="voice-status">選手を選択後「5番 2点」などと話してください</p>
         </section>
         <section class="roster-card away-card"><div class="card-title"><div><small>AWAY</small><h2 id="awayRosterTitle"></h2></div><button data-add-player="B">＋ 選手</button></div><div class="roster-head"><span>NO.</span><span>PLAYER</span><span>PF</span></div><div id="rosterB" class="roster"></div></section>
+        <aside class="input-running-card" aria-label="入力画面ランニングスコア"><div class="input-running-title"><small>LIVE</small><h2>ランニングスコア</h2><span>RUNNING SCORE</span></div><div id="inputRunningScore" class="input-running-score"></div></aside>
       </div>
     </section>
 
@@ -70,6 +71,6 @@
     <form method="dialog"><h2 id="periodDialogTitle"></h2><p>現在の得点を保持し、時計をリセットします。</p><button id="periodConfirm" type="button"></button><button class="dialog-cancel" value="cancel">キャンセル</button></form>
   </dialog>
   <div class="toast" id="toast" role="status"></div>
-  <script src="app.js?v=20260921-3"></script>
+  <script src="app.js?v=20260921-4"></script>
 </body>
 </html>
