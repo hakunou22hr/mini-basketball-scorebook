@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { defaultState, createEvent, derive, runningScoreCells, inputRunningScore, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
+const { defaultState, createEvent, createFoulEvent, createGameStatusEvent, derive, runningScoreCells, inputRunningScore, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -235,8 +235,8 @@ assert.match(js, /function setActiveStatButton\(button\)/);
 assert.match(js, /classList\.toggle\('stat-active',active\)/);
 assert.match(js, /setAttribute\('aria-pressed',active\?'true':'false'\)/);
 assert.match(js, /setActiveStatButton\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
-assert.match(html, /href="styles\.css\?v=20260921-3"/);
-assert.match(html, /src="app\.js\?v=20260921-3"/);
+assert.ok(html.includes('href="styles.css?v=20261001-2"'));
+assert.ok(html.includes('src="app.js?v=20261001-2"'));
 console.log('Persistent stat feedback and cache-busting checks passed');
 
 // Compact roster keeps quarter selectors on one horizontal row and the input view has a live running-score card.
@@ -248,12 +248,77 @@ liveState.events.push(createEvent(liveState, 'B', liveB.id, 'FTM', 'live-b'));
 const liveHtml = inputRunningScore(derive(liveState));
 assert.match(liveHtml, /class="live-run-table"/);
 assert.match(liveHtml, /1–40/);
-assert.match(liveHtml, /scorer-mark ink-red[^>]*>4</span>/);
+assert.match(liveHtml, /scorer-mark ink-red[^>]*>4<\/span>/);
 assert.match(html, /id="inputRunningScore" class="input-running-score"/);
-assert.match(css, /.input-layout{[sS]*?grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px)/);
-assert.match(css, /.player-row .period-checks{[sS]*?grid-template-columns:repeat(4,minmax(0,1fr))/);
-assert.match(css, /.roster{max-height:620px;overflow-y:auto/);
-assert.match(html, /styles.css?v=20260921-4/);
-assert.match(html, /app.js?v=20260921-4/);
+assert.ok(css.includes('grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px)'));
+assert.ok(css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
+assert.ok(css.includes('.roster{max-height:620px;overflow-y:auto'));
+assert.ok(html.includes('styles.css?v=20261001-2'));
+assert.ok(html.includes('app.js?v=20261001-2'));
 console.log('Compact roster and input running-score checks passed');
 
+
+// Structured fouls preserve legacy PF totals while recording type and optional awarded free throws.
+const foulState = defaultState();
+const foulPlayer = foulState.playersA[1];
+foulState.events.push(createFoulEvent(foulState, 'A', foulPlayer.id, 'P', 2, 'foul-p-ft2'));
+foulState.events.push(createFoulEvent(foulState, 'A', foulPlayer.id, 'T', 0, 'foul-t'));
+const foulData = derive(foulState);
+assert.equal(foulData.stats.A[foulPlayer.id].PF, 2);
+assert.deepEqual(foulData.stats.A[foulPlayer.id].foulRecords, [
+  { period: 1, type: 'P', freeThrows: 2 },
+  { period: 1, type: 'T', freeThrows: 0 }
+]);
+assert.equal(foulData.teamFouls.A, 2);
+assert.equal(foulData.pbp.at(-2).label, 'P + FT2');
+assert.equal(foulData.pbp.at(-1).label, 'T');
+assert.throws(() => createFoulEvent(foulState, 'A', foulPlayer.id, 'X', 0), /Invalid foul type/);
+assert.throws(() => createFoulEvent(foulState, 'A', foulPlayer.id, 'P', 4), /Invalid free throws/);
+assert.match(js, /class="player-name-input"/);
+assert.match(js, /e\.target\.closest\('input,label,select,option'\)/);
+assert.match(html, /id="foulDialog"/);
+assert.match(css, /\.foul-mark small\{position:absolute;right:-\.7mm;bottom:-\.7mm/);
+console.log('Tap-safe selection and structured foul checks passed');
+
+// The event log is the source of truth for edits, logical deletion, and FINAL scores.
+const correctionState = defaultState();
+const correctionPlayer = correctionState.playersA[0];
+const correctedShot = createEvent(correctionState, 'A', correctionPlayer.id, '2PM', 'corrected-shot');
+correctionState.events.push(correctedShot);
+assert.equal(derive(correctionState).scores.A, 2);
+correctedShot.action = '3PM'; correctedShot.editedAt = '2026-10-01T00:00:00.000Z';
+let correctedData = derive(correctionState);
+assert.equal(correctedData.scores.A, 3);
+assert.equal(correctedData.stats.A[correctionPlayer.id].PTS, 3);
+assert.equal(correctedData.stats.A[correctionPlayer.id]['3PM'], 1);
+assert.equal(correctedData.running[0].scoreA, 3);
+const laterShot = createEvent(correctionState, 'A', correctionPlayer.id, '2PM', 'later-shot');
+correctionState.events.push(laterShot);
+correctedData = derive(correctionState);
+assert.deepEqual(correctedData.pbp.map(event => event.scoreA), [3, 5]);
+assert.deepEqual(correctedData.running.map(event => event.scoreA), [3, 5]);
+correctedShot.deleted = true;
+correctedData = derive(correctionState);
+assert.equal(correctedData.scores.A, 2);
+assert.equal(correctedData.running.length, 1);
+assert.equal(correctedData.pbp.length, 1);
+assert.equal(correctedData.pbp[0].scoreA, 2);
+laterShot.deleted = true;
+const editableFoul = createFoulEvent(correctionState, 'A', correctionPlayer.id, 'P', 2, 'editable-foul');
+correctionState.events.push(editableFoul);
+editableFoul.freeThrows = 1; editableFoul.editedAt = '2026-10-01T00:01:00.000Z';
+assert.deepEqual(derive(correctionState).stats.A[correctionPlayer.id].foulRecords, [{period:1,type:'P',freeThrows:1}]);
+correctionState.events.push(createGameStatusEvent(correctionState, 'GAME_END', 'game-end'));
+assert.equal(derive(correctionState).gameEnded, true);
+const finalCorrection = createEvent(correctionState, 'A', correctionPlayer.id, '2PM', 'final-correction');
+correctionState.events.splice(-1, 0, finalCorrection);
+assert.equal(derive(correctionState).scores.A, 2);
+finalCorrection.action = '3PM';
+assert.equal(derive(correctionState).scores.A, 3);
+correctionState.events.push(createGameStatusEvent(correctionState, 'GAME_RESUME', 'game-resume'));
+assert.equal(derive(correctionState).gameEnded, false);
+assert.match(html, /id="gameEndButton"/);
+assert.match(html, /id="eventEditDialog"/);
+assert.match(html, /id="eventDeleteDialog"/);
+assert.match(js, /event\.deleted=true/);
+console.log('Event correction, logical deletion, and game status checks passed');
