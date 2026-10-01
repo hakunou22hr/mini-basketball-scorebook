@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const { defaultState, createEvent, derive, runningScoreCells, inputRunningScore, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
+const { defaultState, createEvent, createFoulEvent, derive, runningScoreCells, inputRunningScore, scoreQuarterStack, getQuarterRecordColor, getQuarterInk, periodLabel, participationMark, participationRecordClass } = require('../app.js');
 const state = defaultState();
 const home = state.playersA[3]; // #7
 const away = state.playersB[4]; // #8
@@ -235,8 +235,8 @@ assert.match(js, /function setActiveStatButton\(button\)/);
 assert.match(js, /classList\.toggle\('stat-active',active\)/);
 assert.match(js, /setAttribute\('aria-pressed',active\?'true':'false'\)/);
 assert.match(js, /setActiveStatButton\(action\);addEvent\(state\.selected\.team,state\.selected\.playerId,action\.dataset\.action\)/);
-assert.match(html, /href="styles\.css\?v=20260921-3"/);
-assert.match(html, /src="app\.js\?v=20260921-3"/);
+assert.ok(html.includes('href="styles.css?v=20261001-1"'));
+assert.ok(html.includes('src="app.js?v=20261001-1"'));
 console.log('Persistent stat feedback and cache-busting checks passed');
 
 // Compact roster keeps quarter selectors on one horizontal row and the input view has a live running-score card.
@@ -248,12 +248,34 @@ liveState.events.push(createEvent(liveState, 'B', liveB.id, 'FTM', 'live-b'));
 const liveHtml = inputRunningScore(derive(liveState));
 assert.match(liveHtml, /class="live-run-table"/);
 assert.match(liveHtml, /1–40/);
-assert.match(liveHtml, /scorer-mark ink-red[^>]*>4</span>/);
+assert.match(liveHtml, /scorer-mark ink-red[^>]*>4<\/span>/);
 assert.match(html, /id="inputRunningScore" class="input-running-score"/);
-assert.match(css, /.input-layout{[sS]*?grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px)/);
-assert.match(css, /.player-row .period-checks{[sS]*?grid-template-columns:repeat(4,minmax(0,1fr))/);
-assert.match(css, /.roster{max-height:620px;overflow-y:auto/);
-assert.match(html, /styles.css?v=20260921-4/);
-assert.match(html, /app.js?v=20260921-4/);
+assert.ok(css.includes('grid-template-columns:minmax(240px,1fr) minmax(320px,380px) minmax(240px,1fr) minmax(250px,320px)'));
+assert.ok(css.includes('grid-template-columns:repeat(4,minmax(0,1fr))'));
+assert.ok(css.includes('.roster{max-height:620px;overflow-y:auto'));
+assert.ok(html.includes('styles.css?v=20261001-1'));
+assert.ok(html.includes('app.js?v=20261001-1'));
 console.log('Compact roster and input running-score checks passed');
 
+
+// Structured fouls preserve legacy PF totals while recording type and optional awarded free throws.
+const foulState = defaultState();
+const foulPlayer = foulState.playersA[1];
+foulState.events.push(createFoulEvent(foulState, 'A', foulPlayer.id, 'P', 2, 'foul-p-ft2'));
+foulState.events.push(createFoulEvent(foulState, 'A', foulPlayer.id, 'T', 0, 'foul-t'));
+const foulData = derive(foulState);
+assert.equal(foulData.stats.A[foulPlayer.id].PF, 2);
+assert.deepEqual(foulData.stats.A[foulPlayer.id].foulRecords, [
+  { period: 1, type: 'P', freeThrows: 2 },
+  { period: 1, type: 'T', freeThrows: 0 }
+]);
+assert.equal(foulData.teamFouls.A, 2);
+assert.equal(foulData.pbp.at(-2).label, 'P + FT2');
+assert.equal(foulData.pbp.at(-1).label, 'T');
+assert.throws(() => createFoulEvent(foulState, 'A', foulPlayer.id, 'X', 0), /Invalid foul type/);
+assert.throws(() => createFoulEvent(foulState, 'A', foulPlayer.id, 'P', 4), /Invalid free throws/);
+assert.match(js, /class="player-name-input"/);
+assert.match(js, /e\.target\.closest\('input,label,select,option'\)/);
+assert.match(html, /id="foulDialog"/);
+assert.match(css, /\.foul-mark small\{position:absolute;right:-\.7mm;bottom:-\.7mm/);
+console.log('Tap-safe selection and structured foul checks passed');
